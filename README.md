@@ -1,5 +1,7 @@
 # Retro-Hardware
 
+![Logo](assets/LOGO.png)
+
 ## Application Tree :
 * Splash Screen
     * Collection (all collections)
