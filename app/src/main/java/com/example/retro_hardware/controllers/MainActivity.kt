@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Layout
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,9 +12,25 @@ import android.widget.BaseAdapter
 import android.widget.ListView
 import android.widget.TextView
 import com.example.retro_hardware.R
+import com.example.retro_hardware.models.Collection
 import com.example.retro_hardware.models.User
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity {
+
+    /**
+     * The collection
+     */
+    var collection: Collection? = null
+
+//    companion object {
+//        var context: Context? = null
+//    }
+
+    constructor() {
+//        MainActivity.context = context
+        Log.d("MainActivity", "constructor")
+        collection =  Collection.getInstance()
+    }
 
     val users = arrayListOf<User>(
         User("Donald Trump",65),
