@@ -53,7 +53,6 @@ class FetchItems: AsyncTask<Void, Void, String> {
         super.onPostExecute(result)
 
         Log.d("FetchItems","onPostExecute")
-        Log.d("FetchItems",Collection.getItems().toString())
 
         // Toast
 //        val toast = Toast.makeText(MainActivity.context, "Finish the download !", Toast.LENGTH_SHORT)
@@ -63,7 +62,7 @@ class FetchItems: AsyncTask<Void, Void, String> {
     /**
      * Parse the stream as JSON
      */
-    fun readJsonStream(response: InputStream) {
+    private fun readJsonStream(response: InputStream) {
 
         Log.d("FetchItems","fetchItems")
 
@@ -103,7 +102,7 @@ class FetchItems: AsyncTask<Void, Void, String> {
             readObjectItems(reader, item)
 
             // Add it to the collection
-            Collection.addItem(item)
+            MainActivity.collection.addItem(item)
         }
 
         reader.endObject()

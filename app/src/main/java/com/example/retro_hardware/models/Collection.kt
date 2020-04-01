@@ -26,27 +26,11 @@ class Collection {
             /**
              * If the collection isn't populated
              */
-            if (INSTANCE != null && INSTANCE.items.size <= 0) {
-
-                // TODO : Make the thread here
+            if (INSTANCE.items.size <= 0) {
                 FetchItems().execute()
             }
 
             return INSTANCE
-        }
-
-        /**
-         * Add an Item to the list of Items
-         */
-        fun addItem(item: Item) {
-            getInstance().items.add(item)
-        }
-
-        /**
-         * Return an array list of Items
-         */
-        fun getItems(): ArrayList<Item> {
-            return getInstance().items
         }
 
         /**
@@ -55,5 +39,26 @@ class Collection {
         fun getUrlCollection(): String {
             return "${Api.BASE_URL}/catalog"
         }
+    }
+
+    /**
+     * Add an Item to the list of Items
+     */
+    fun addItem(item: Item) {
+        getInstance().items.add(item)
+    }
+
+    /**
+     * Return an array list of Items
+     */
+    @Synchronized fun getItems(): ArrayList<Item> {
+        return getInstance().items
+    }
+
+    /**
+     * Return the item of the array
+     */
+    @Synchronized fun getItem(index: Int): Item {
+        return getInstance().items[index]
     }
 }
