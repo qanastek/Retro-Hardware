@@ -1,5 +1,14 @@
 package com.example.retro_hardware.models
 
+import android.content.Context
+import android.os.Parcel
+import android.os.Parcelable
+import androidx.core.content.ContextCompat
+import com.example.retro_hardware.R
+import com.example.retro_hardware.controllers.MainActivity
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 class Item(
     var id: String,
     var name: String,
@@ -11,7 +20,7 @@ class Item(
     var technicalDetails: ArrayList<String>,
     var categories: ArrayList<String>,
     var timeFrame: ArrayList<Short>
-) {
+): Parcelable {
 
     /**
      * Empty Constructor
@@ -64,14 +73,31 @@ class Item(
     /**
      * Get the thumbnail url
      */
-    private fun getUrlThumbnail(): String {
+    fun getUrlThumbnail(): String {
         return "${Api.BASE_URL}/items/${this.id}/thumbnail"
+    }
+
+    fun isWorking(): String {
+
+        if (this.working) {
+            return "WORKING"
+        }
+
+        return "BROKEN"
+    }
+    fun isWorkingColor(context: Context): Int {
+
+        if (this.working) {
+            return ContextCompat.getColor(context, R.color.success)
+        }
+
+        return ContextCompat.getColor(context, R.color.danger)
     }
 
     /**
      * Get a image url
      */
-    private fun getUrlImage(imageId: String): String {
+    fun getUrlImage(imageId: String): String {
         return "${Api.BASE_URL}/items/${this.id}/images/$imageId"
     }
 

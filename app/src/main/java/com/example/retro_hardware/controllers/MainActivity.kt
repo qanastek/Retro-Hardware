@@ -1,22 +1,22 @@
 package com.example.retro_hardware.controllers
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.text.Layout
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.ListView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.retro_hardware.R
 import com.example.retro_hardware.models.Collection
 import com.example.retro_hardware.models.Item
-import com.example.retro_hardware.models.User
+import com.example.retro_hardware.models.Threads.FetchImage
+import java.net.URL
+
 
 class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
 
@@ -49,6 +49,14 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
 
         // Update the view
         adapter?.notifyDataSetChanged()
+
+        listView.setOnItemClickListener { parent, view, position, id ->
+
+            val item: Item? = adapter?.getItem(position) // The item that was clicked
+            var intent = Intent(this, ItemActivity::class.java)
+            intent.putExtra("item", item)
+            startActivity(intent)
+        }
     }
 
     override fun onRefresh() {
@@ -60,19 +68,9 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
         /**
          * Context
          */
-        private val context: Context?
-
-        /**
-         * Constructor
-         */
-        init {
-            this.context = context
-        }
+        private var context: Context = context
 
         override fun getView(position: Int, convertView: View?, viewGroup: ViewGroup?): View {
-//            val text1 = TextView(this.context)
-//            text1.text = this.users[position].name
-//            return  text1
 
             val inflater = LayoutInflater.from(this.context)
 
@@ -80,6 +78,10 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
             val row = inflater.inflate(R.layout.item_row, viewGroup, false)
 
             val item: Item =  collection.getItem(position)
+
+            // Thumbnail
+            val thumb = row.findViewById<ImageView>(R.id.image)
+            FetchImage(thumb, item).execute()
 
             // Name
             val nameText = row.findViewById<TextView>(R.id.name)
@@ -93,10 +95,12 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
         }
 
         override fun getItem(position: Int): Item {
+            Log.d("MainActivity","getItem")
             return collection.getItem(position)
         }
 
         override fun getItemId(position: Int): Long {
+            Log.d("MainActivity","getItemId")
             return position.toLong()
         }
 

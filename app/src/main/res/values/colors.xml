@@ -7,6 +7,7 @@
     <color name="textColorSecondary">#ffffff</color>
     <color name="textColorTertiary">#b3b3de</color>
     <color name="success">#00a04a</color>
+    <color name="danger">#dc3545</color>
     <color name="brand">#9e9e9e</color>
     <color name="chipColor">#00c6fe</color>
     <color name="searchBarIconColor">#cbcbcb</color>

@@ -49,6 +49,13 @@ class Collection {
     }
 
     /**
+     * Add an Items to the list of Items
+     */
+    fun addItems(items: ArrayList<Item>) {
+        getInstance().items.addAll(items)
+    }
+
+    /**
      * Return an array list of Items
      */
     @Synchronized fun getItems(): ArrayList<Item> {

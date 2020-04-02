@@ -14,6 +14,11 @@ import java.net.URL
 
 class FetchItems: AsyncTask<Void, Void, String> {
 
+    /**
+     * Array list of items
+     */
+    private val items: ArrayList<Item> = arrayListOf()
+
     constructor()
 
     // ArrayList of Item
@@ -53,6 +58,9 @@ class FetchItems: AsyncTask<Void, Void, String> {
         super.onPostExecute(result)
 
         Log.d("FetchItems","onPostExecute")
+
+        // Add all the items
+        MainActivity.collection.addItems(items)
 
         // Toast
 //        val toast = Toast.makeText(MainActivity.context, "Finish the download !", Toast.LENGTH_SHORT)
@@ -102,7 +110,7 @@ class FetchItems: AsyncTask<Void, Void, String> {
             readObjectItems(reader, item)
 
             // Add it to the collection
-            MainActivity.collection.addItem(item)
+            this.items.add(item)
         }
 
         reader.endObject()
