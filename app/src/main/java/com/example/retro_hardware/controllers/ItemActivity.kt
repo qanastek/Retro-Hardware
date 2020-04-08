@@ -1,16 +1,22 @@
 package com.example.retro_hardware.controllers
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.example.retro_hardware.R
 import com.example.retro_hardware.models.Item
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 
 class ItemActivity : AppCompatActivity() {
 
     lateinit var item: Item
 
+    lateinit var chipGroup: ChipGroup
     lateinit var productName: TextView
     lateinit var brand: TextView
     lateinit var year: TextView
@@ -28,6 +34,7 @@ class ItemActivity : AppCompatActivity() {
     }
 
     private fun initFields() {
+        this.chipGroup = findViewById(R.id.chipGroup)
         this.productName = findViewById(R.id.productName)
         this.brand = findViewById(R.id.brand)
         this.year = findViewById(R.id.year)
@@ -55,6 +62,29 @@ class ItemActivity : AppCompatActivity() {
             this.year.text = item.year.toString()
         } else {
             this.year.text = "XXXX"
+        }
+
+        if (this.item != null && this.item.categories != null && this.item.categories.size > 0) {
+
+            for (category in this.item.categories) {
+
+                val chip = Chip(chipGroup.context)
+                chip.text= category.toUpperCase()
+
+                chip.chipBackgroundColor = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipColor))
+                chip.isClickable = false
+                chip.isCheckable = false
+                chipGroup.addView(chip)
+
+            }
+        } else {
+
+            val chip = Chip(chipGroup.context)
+            chip.text= "EMPTY"
+            chip.chipBackgroundColor = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipColor))
+            chip.isClickable = false
+            chip.isCheckable = false
+            chipGroup.addView(chip)
         }
 
         // Status
