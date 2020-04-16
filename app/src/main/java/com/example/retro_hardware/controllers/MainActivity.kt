@@ -2,7 +2,6 @@ package com.example.retro_hardware.controllers
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,7 +14,6 @@ import com.example.retro_hardware.R
 import com.example.retro_hardware.models.Collection
 import com.example.retro_hardware.models.Item
 import com.example.retro_hardware.models.Threads.FetchImage
-import java.net.URL
 
 
 class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
@@ -81,7 +79,7 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
 
             // Thumbnail
             val thumb = row.findViewById<ImageView>(R.id.image)
-            FetchImage(thumb, item).execute()
+            FetchImage(thumb, item!!.getUrlThumbnail()).execute()
 
             // Name
             val nameText = row.findViewById<TextView>(R.id.name)

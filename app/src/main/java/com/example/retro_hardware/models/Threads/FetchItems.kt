@@ -34,8 +34,6 @@ class FetchItems: AsyncTask<Void, Void, String> {
      */
     override fun doInBackground(vararg p0: Void?): String {
 
-        Log.d("FetchItems","doInBackground")
-
         // URL to get the collection
         val url: String = Collection.getUrlCollection()
 
@@ -56,8 +54,6 @@ class FetchItems: AsyncTask<Void, Void, String> {
      */
     override fun onPostExecute(result: String?) {
         super.onPostExecute(result)
-
-        Log.d("FetchItems","onPostExecute")
 
         // Add all the items
         MainActivity.collection.addItems(items)

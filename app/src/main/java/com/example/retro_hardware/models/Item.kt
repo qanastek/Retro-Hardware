@@ -3,6 +3,7 @@ package com.example.retro_hardware.models
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
+import android.util.Log
 import androidx.core.content.ContextCompat
 import com.example.retro_hardware.R
 import com.example.retro_hardware.controllers.MainActivity
@@ -63,8 +64,9 @@ class Item(
         val res: ArrayList<String> = arrayListOf()
 
         // For each pictures in teh HashMap
-        for (img in pictures) {
-            res.add(this.getUrlImage(img.key))
+        for (img in pictures.keys) {
+            val url = this.getUrlImage(img)
+            res.add(url)
         }
 
         return res

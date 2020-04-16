@@ -12,16 +12,11 @@ import java.net.URL
 class FetchImage: AsyncTask<ImageView, Void, Bitmap> {
 
     var imageView: ImageView? = null
-    var item: Item? = null
+    var url: String? = null
 
-    /**
-     * Array list of items
-     */
-    private val items: ArrayList<Item> = arrayListOf()
-
-    constructor(imageView: ImageView, item: Item) {
+    constructor(imageView: ImageView, url: String?) {
         this.imageView = imageView
-        this.item = item
+        this.url = url
     }
 
     /**
@@ -35,7 +30,7 @@ class FetchImage: AsyncTask<ImageView, Void, Bitmap> {
 
         Log.d("FetchItems","doInBackground")
 
-        val url = URL(item!!.getUrlThumbnail())
+        val url = URL(url)
         return BitmapFactory.decodeStream(url.openConnection().getInputStream())
     }
 
