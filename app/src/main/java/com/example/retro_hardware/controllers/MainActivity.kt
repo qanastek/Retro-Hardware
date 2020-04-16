@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
 
             // Thumbnail
             val thumb = row.findViewById<ImageView>(R.id.image)
-            FetchImage(thumb, item!!.getUrlThumbnail()).execute()
+            FetchImage(thumb, item!!.getUrlThumbnail(),this.context).execute()
 
             // Name
             val nameText = row.findViewById<TextView>(R.id.name)

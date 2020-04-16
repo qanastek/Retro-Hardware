@@ -32,7 +32,7 @@ class Collection : SQLiteOpenHelper {
         val TAG: String = this::class.java.canonicalName as String
 
         // Current database version
-        const val DATABASE_VERSION: Int = 2
+        const val DATABASE_VERSION: Int = 8
 
         // Database name
         const val DATABASE_NAME = "retro.hardware"
@@ -72,9 +72,15 @@ class Collection : SQLiteOpenHelper {
             return "${Api.BASE_URL}/catalog"
         }
 
+        /**
+         * Check if the phote can reach the internet
+         */
         fun isOnline(context: Context): Boolean {
             val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val networkInfo = connectivityManager.activeNetworkInfo
+
+            Log.d("------------", (networkInfo != null && networkInfo.isConnected).toString())
+
             return networkInfo != null && networkInfo.isConnected
         }
     }
@@ -221,13 +227,18 @@ class Collection : SQLiteOpenHelper {
             // Foreach picture
             for (picture in item.pictures) {
 
-                val values = ContentValues()
-                values.put(PICTURES_ID,picture.key)
-                values.put(PICTURES_ITEM_ID,item.id)
-                values.put(PICTURES_DESCRIPTION,picture.value)
+                val valuesPicture = ContentValues()
+
+                Log.d("------0", picture.key)
+                Log.d("------1", item.id)
+                Log.d("------2", picture.value)
+
+                valuesPicture.put(PICTURES_ID, picture.key)
+                valuesPicture.put(PICTURES_ITEM_ID, item.id)
+                valuesPicture.put(PICTURES_DESCRIPTION,picture.value)
 
                 // Insertion
-                val statusTemp = db.insertWithOnConflict(PICTURES_TABLE, null, values, CONFLICT_IGNORE)
+                val statusTemp = db.insertWithOnConflict(PICTURES_TABLE, null, valuesPicture, CONFLICT_IGNORE)
 
                 // Keep the error if it's one
                 if (statusTemp == -1L) { pictureStatus = statusTemp }
@@ -391,7 +402,7 @@ class Collection : SQLiteOpenHelper {
 
             while (!cursorCategories.isAfterLast) {
 
-                item.categories.add(cursor.getString(cursor.getColumnIndex(CATEGORIES_NAME)))
+                item.categories.add(cursorCategories.getString(cursorCategories.getColumnIndex(CATEGORIES_NAME)))
                 cursorCategories.moveToNext()
             }
         }
@@ -404,10 +415,13 @@ class Collection : SQLiteOpenHelper {
 
             while (!cursorPictures.isAfterLast) {
 
-                val id = cursor.getString(cursor.getColumnIndex(PICTURES_ID))
-                val desc = cursor.getString(cursor.getColumnIndex(PICTURES_DESCRIPTION))
+                val idItem = cursorPictures.getString(cursorPictures.getColumnIndex(PICTURES_ITEM_ID))
+                val idPic = cursorPictures.getString(cursorPictures.getColumnIndex(PICTURES_ID))
+                val desc = cursorPictures.getString(cursorPictures.getColumnIndex(PICTURES_DESCRIPTION))
 
-                item.pictures[id] = desc
+                Log.d("------", "$idPic = $desc \\ $idItem")
+
+                item.pictures[idPic] = desc
 
                 cursorPictures.moveToNext()
             }
@@ -421,7 +435,7 @@ class Collection : SQLiteOpenHelper {
 
             while (!cursorTechnicalDetails.isAfterLast) {
 
-                item.technicalDetails.add(cursor.getString(cursor.getColumnIndex(TECHNICAL_DETAILS_NAME)))
+                item.technicalDetails.add(cursorTechnicalDetails.getString(cursorTechnicalDetails.getColumnIndex(TECHNICAL_DETAILS_NAME)))
 
                 cursorTechnicalDetails.moveToNext()
             }
@@ -435,7 +449,7 @@ class Collection : SQLiteOpenHelper {
 
             while (!cursorTimeFrame.isAfterLast) {
 
-                item.timeFrame.add(cursor.getShort(cursor.getColumnIndex(TIME_FRAME_YEAR)))
+                item.timeFrame.add(cursorTimeFrame.getShort(cursorTimeFrame.getColumnIndex(TIME_FRAME_YEAR)))
 
                 cursorTimeFrame.moveToNext()
             }
@@ -452,16 +466,16 @@ class Collection : SQLiteOpenHelper {
         val res: ArrayList<Item> = ArrayList()
 
         // Get all the items
-        val cursor: Cursor = fetchAllItems()
+        val cursorItems: Cursor = fetchAllItems()
 
-        if (cursor.moveToFirst()) {
+        if (cursorItems.moveToFirst()) {
 
-            while (!cursor.isAfterLast) {
+            while (!cursorItems.isAfterLast) {
 
-                val item: Item = this.cursorToItem(cursor)
+                val item: Item = this.cursorToItem(cursorItems)
                 res.add(item)
 
-                cursor.moveToNext()
+                cursorItems.moveToNext()
             }
         }
 

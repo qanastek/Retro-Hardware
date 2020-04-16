@@ -141,11 +141,14 @@ class ItemActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
+            Log.d("----",images.size.toString())
+            Log.d("----",images.toString())
+
             // Image url
             val imageUrl: String = images[position]
 
             // Get image
-            FetchImage(holder.image, imageUrl).execute()
+            FetchImage(holder.image, imageUrl, context).execute()
         }
 
         override fun getItemCount(): Int {
