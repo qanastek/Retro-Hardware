@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
         /**
          * The collection
          */
-        var collection: Collection = Collection.getInstance()
+        lateinit var collection: Collection
 
         /**
          * Adapter
@@ -39,6 +39,8 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        collection = Collection(this)
 
         var listView: ListView = findViewById(R.id.UsersListView)
 

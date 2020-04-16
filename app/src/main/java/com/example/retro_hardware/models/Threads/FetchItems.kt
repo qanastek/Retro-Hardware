@@ -57,6 +57,12 @@ class FetchItems: AsyncTask<Void, Void, String> {
 
         // Add all the items
         MainActivity.collection.addItems(items)
+        MainActivity.collection.loadItems()
+
+        // Log.d("--------- size: ", items.size.toString())
+        // Log.d("--------- size: ", MainActivity.collection.getItems().size.toString())
+
+        MainActivity.adapter?.notifyDataSetChanged()
 
         // Toast
 //        val toast = Toast.makeText(MainActivity.context, "Finish the download !", Toast.LENGTH_SHORT)

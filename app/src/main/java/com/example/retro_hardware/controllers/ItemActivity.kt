@@ -67,19 +67,19 @@ class ItemActivity : AppCompatActivity() {
 
         this.productName.text = item.name
 
-        if (item.brand != null && !item.brand.isBlank()) {
+        if (!item.brand.isBlank()) {
             this.brand.text = item.brand
         } else {
             this.brand.text = "No brand"
         }
 
-        if (item.description != null && !item.description.isBlank()) {
+        if (!item.description.isBlank()) {
             this.description.text = item.description
         } else {
             this.description.text = "No description"
         }
 
-        if (item.year != null && item.year.toInt() != 0) {
+        if (item.year.toInt() != 0) {
             this.year.text = item.year.toString()
         } else {
             this.year.text = "XXXX"
@@ -88,7 +88,7 @@ class ItemActivity : AppCompatActivity() {
         /**
          * Check if have categories
          */
-        if (this.item != null && this.item.categories != null && this.item.categories.size > 0) {
+        if (this.item.categories.size > 0) {
 
             // If yes, add them
             for (category in this.item.categories) {

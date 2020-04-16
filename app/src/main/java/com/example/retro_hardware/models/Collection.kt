@@ -1,37 +1,69 @@
 package com.example.retro_hardware.models
 
+import android.content.ContentValues
+import android.content.Context
+import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE
+import android.database.sqlite.SQLiteOpenHelper
+import android.net.ConnectivityManager
 import android.util.Log
 import com.example.retro_hardware.models.Threads.FetchItems
 
-class Collection {
 
-    private constructor()
+class Collection : SQLiteOpenHelper {
+
+    /**
+     * Context
+     */
+    private lateinit var context: Context
 
     /**
      * Array list of items
      */
-    private val items: ArrayList<Item> = arrayListOf()
+    private var items: ArrayList<Item> = arrayListOf()
 
     /**
      * Static methods
      */
     companion object {
 
-        // Instance of the singleton
-        private val INSTANCE: Collection = Collection()
+        // Class name
+        val TAG: String = this::class.java.canonicalName as String
 
-        // Get the singleton instance
-        @Synchronized fun getInstance(): Collection {
+        // Current database version
+        const val DATABASE_VERSION: Int = 2
 
-            /**
-             * If the collection isn't populated
-             */
-            if (INSTANCE.items.size <= 0) {
-                FetchItems().execute()
-            }
+        // Database name
+        const val DATABASE_NAME = "retro.hardware"
 
-            return INSTANCE
-        }
+        /**
+         * Columnn names
+         */
+        const val COLLECTION_TABLE  = "collection"
+        const val COLLECTION_ID  = "id" // Item id
+        const val COLLECTION_YEAR  = "year"
+        const val COLLECTION_NAME  = "name"
+        const val COLLECTION_BRAND  = "brand"
+        const val COLLECTION_DESCRIPTION  = "description"
+        const val COLLECTION_WORKING  = "working"
+
+        const val PICTURES_TABLE  = "pictures"
+        const val PICTURES_ID  = "id" // Image id
+        const val PICTURES_ITEM_ID  = "item_id" // Item id
+        const val PICTURES_DESCRIPTION  = "description"
+
+        const val CATEGORIES_TABLE  = "categories"
+        const val CATEGORIES_ITEM_ID  = "item_id" // Item id
+        const val CATEGORIES_NAME  = "name"
+
+        const val TECHNICAL_DETAILS_TABLE  = "technicalDetails"
+        const val TECHNICAL_DETAILS_ITEM_ID  = "item_id" // Item id
+        const val TECHNICAL_DETAILS_NAME  = "name"
+
+        const val TIME_FRAME_TABLE  = "timeFrame"
+        const val TIME_FRAME_ITEM_ID  = "item_id" // Item id
+        const val TIME_FRAME_YEAR  = "year"
 
         /**
          * Get a collection url
@@ -39,33 +71,414 @@ class Collection {
         fun getUrlCollection(): String {
             return "${Api.BASE_URL}/catalog"
         }
+
+        fun isOnline(context: Context): Boolean {
+            val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val networkInfo = connectivityManager.activeNetworkInfo
+            return networkInfo != null && networkInfo.isConnected
+        }
     }
 
     /**
-     * Add an Item to the list of Items
+     * Constructor
      */
-    fun addItem(item: Item) {
-        getInstance().items.add(item)
+    constructor(context: Context) : super(context, DATABASE_NAME, null, DATABASE_VERSION) {
+        this.context = context
+        this.loadItems() // Load the database into the array list
+    }
+
+    /**
+     * When the database is instanciated
+     */
+    override fun onCreate(db: SQLiteDatabase?) {
+
+        // If the database is null
+        if (db == null) { return }
+
+        /**
+         * Create the collection table
+         */
+        var SQL_CREATE_COLLECTION_QUERY: String = "CREATE TABLE ${COLLECTION_TABLE} (" +
+                "$COLLECTION_ID TEXT PRIMARY KEY, " +
+                "$COLLECTION_NAME TEXT NOT NULL, " +
+                "$COLLECTION_BRAND TEXT, " +
+                "$COLLECTION_YEAR INTEGER, " +
+                "$COLLECTION_DESCRIPTION TEXT," +
+                "$COLLECTION_WORKING BOOLEAN, " +
+                " UNIQUE ($COLLECTION_NAME, $COLLECTION_BRAND) ON CONFLICT ROLLBACK);"
+
+        db.execSQL(SQL_CREATE_COLLECTION_QUERY)
+
+        /**
+         * Create the pictures table
+         */
+        var SQL_CREATE_PICTURES_QUERY: String = "CREATE TABLE ${PICTURES_TABLE} (" +
+                "$PICTURES_ID TEXT PRIMARY KEY NOT NULL, " +
+                "$PICTURES_ITEM_ID TEXT NOT NULL, " +
+                "$PICTURES_DESCRIPTION TEXT)"
+
+        db.execSQL(SQL_CREATE_PICTURES_QUERY)
+
+        /**
+         * Create the categories table
+         */
+        var SQL_CREATE_CATEGORIES_QUERY: String = "CREATE TABLE ${CATEGORIES_TABLE} (" +
+                "$CATEGORIES_ITEM_ID TEXT NOT NULL, " +
+                "$CATEGORIES_NAME TEXT NOT NULL)"
+
+        db.execSQL(SQL_CREATE_CATEGORIES_QUERY)
+
+        /**
+         * Create the technical details table
+         */
+        var SQL_CREATE_TECHNICAL_DETAILS_QUERY: String = "CREATE TABLE ${TECHNICAL_DETAILS_TABLE} (" +
+                "$TECHNICAL_DETAILS_ITEM_ID TEXT NOT NULL, " +
+                "$TECHNICAL_DETAILS_NAME TEXT NOT NULL)"
+
+        db.execSQL(SQL_CREATE_TECHNICAL_DETAILS_QUERY)
+
+        /**
+         * Create the time frame table
+         */
+        var SQL_CREATE_TIME_FRAME_QUERY: String = "CREATE TABLE ${TIME_FRAME_TABLE} (" +
+                "$TIME_FRAME_ITEM_ID TEXT NOT NULL, " +
+                "$TIME_FRAME_YEAR INTEGER NOT NULL)"
+
+        db.execSQL(SQL_CREATE_TIME_FRAME_QUERY)
+
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+
+        // If the internet connection is enabled
+        if (isOnline(this.context)) {
+            FetchItems().execute()
+        }
+    }
+
+    /**
+     * Fills the ContentValues of the item with a Item
+     */
+    fun contentValuesItem(item: Item): ContentValues {
+
+        val values = ContentValues()
+
+        values.put(COLLECTION_ID,item.id)
+        values.put(COLLECTION_BRAND,item.brand)
+        values.put(COLLECTION_DESCRIPTION,item.description)
+        values.put(COLLECTION_NAME,item.name)
+        values.put(COLLECTION_WORKING,item.working)
+        values.put(COLLECTION_YEAR,item.year)
+
+        return values
+    }
+
+    /**
+     * Add an Item to the database
+     */
+    fun addItem(item: Item): Boolean {
+
+        // If the item is empty
+        if (item == null) { return false }
+
+        // Connect to the db
+        val db = this.writableDatabase
+
+        Log.d(TAG, "Add " + item.name + " with id " + item.id);
+
+        // The the content values for the item itself
+        val itemValues: ContentValues = contentValuesItem(item)
+        // Insert the item into it's table
+        val itemStatus: Long = db.insertWithOnConflict(COLLECTION_TABLE, null, itemValues, CONFLICT_IGNORE)
+
+        /**
+         * If have categories
+         */
+        var categoriesStatus: Long = 0
+        if (item.categories.size > 0) {
+
+            // Foreach categories
+            for (category in item.categories) {
+
+                val values = ContentValues()
+                values.put(CATEGORIES_ITEM_ID,item.id)
+                values.put(CATEGORIES_NAME,category)
+
+                // Insertion
+                val statusTemp = db.insertWithOnConflict(CATEGORIES_TABLE, null, values, CONFLICT_IGNORE)
+
+                // Keep the error if it's one
+                if (statusTemp == -1L) { categoriesStatus = statusTemp }
+            }
+        }
+
+        /**
+         * If have pictures
+         */
+        var pictureStatus: Long = 0
+        if (item.pictures.size > 0) {
+
+            // Foreach picture
+            for (picture in item.pictures) {
+
+                val values = ContentValues()
+                values.put(PICTURES_ID,picture.key)
+                values.put(PICTURES_ITEM_ID,item.id)
+                values.put(PICTURES_DESCRIPTION,picture.value)
+
+                // Insertion
+                val statusTemp = db.insertWithOnConflict(PICTURES_TABLE, null, values, CONFLICT_IGNORE)
+
+                // Keep the error if it's one
+                if (statusTemp == -1L) { pictureStatus = statusTemp }
+            }
+        }
+
+        /**
+         * If have technical details
+         */
+        var technicalDetailsStatus: Long = 0
+        if (item.technicalDetails.size > 0) {
+
+            // Foreach technical detail
+            for (detail in item.technicalDetails) {
+
+                val values = ContentValues()
+                values.put(TECHNICAL_DETAILS_ITEM_ID,item.id)
+                values.put(TECHNICAL_DETAILS_NAME,detail)
+
+                // Insertion
+                val statusTemp = db.insertWithOnConflict(TECHNICAL_DETAILS_TABLE, null, values, CONFLICT_IGNORE)
+
+                // Keep the error if it's one
+                if (statusTemp == -1L) { technicalDetailsStatus = statusTemp }
+            }
+        }
+
+        /**
+         * If have time frame
+         */
+        var timeFrameStatus: Long = 0
+        if (item.timeFrame.size > 0) {
+
+            // Foreach technical detail
+            for (date in item.timeFrame) {
+
+                val values = ContentValues()
+                values.put(TIME_FRAME_ITEM_ID,item.id)
+                values.put(TIME_FRAME_YEAR,date)
+
+                // Insertion
+                val statusTemp = db.insertWithOnConflict(TIME_FRAME_TABLE, null, values, CONFLICT_IGNORE)
+
+                // Keep the error if it's one
+                if (statusTemp == -1L) { timeFrameStatus = statusTemp }
+            }
+        }
+
+        // Close the stream with the db
+        db.close()
+
+        // Return if everything have been inserted correctly
+        return itemStatus != -1L && categoriesStatus != -1L && pictureStatus != -1L && technicalDetailsStatus != -1L && timeFrameStatus != -1L
     }
 
     /**
      * Add an Items to the list of Items
      */
     fun addItems(items: ArrayList<Item>) {
-        getInstance().items.addAll(items)
+
+        // For each item add it
+        for (item in items) {
+            this.addItem(item)
+        }
+    }
+
+    /**
+     * Returns a cursor of all the items of the database
+     */
+    private fun fetchAllItems(): Cursor {
+
+        val db = this.readableDatabase
+
+        val cursor = db.query(
+            COLLECTION_TABLE, null,
+            null, null, null, null, COLLECTION_YEAR.toString() + " ASC", null
+        )
+
+        cursor?.moveToFirst()
+
+        return cursor
+    }
+
+    /**
+     * Returns a cursor of all the categories of the item
+     */
+    private fun fetchAllCategories(itemId: String): Cursor {
+
+        val db = this.readableDatabase
+
+        val cursor = db.rawQuery("SELECT * FROM $CATEGORIES_TABLE WHERE $CATEGORIES_ITEM_ID = \"$itemId\"", null)
+
+        cursor?.moveToFirst()
+
+        return cursor
+    }
+
+    /**
+     * Returns a cursor of all the pictures of the item
+     */
+    private fun fetchAllPictures(itemId: String): Cursor {
+
+        val db = this.readableDatabase
+
+        val cursor = db.rawQuery("SELECT * FROM $PICTURES_TABLE WHERE $PICTURES_ITEM_ID = \"$itemId\"", null)
+
+        cursor?.moveToFirst()
+
+        return cursor
+    }
+
+    /**
+     * Returns a cursor of all the technical details of the item
+     */
+    private fun fetchAllTechnicalDetails(itemId: String): Cursor {
+
+        val db = this.readableDatabase
+
+        val cursor = db.rawQuery("SELECT * FROM $TECHNICAL_DETAILS_TABLE WHERE $TECHNICAL_DETAILS_ITEM_ID = \"$itemId\"", null)
+
+        cursor?.moveToFirst()
+
+        return cursor
+    }
+
+    /**
+     * Returns a cursor of all the time frame of the item
+     */
+    private fun fetchAllTimeFrame(itemId: String): Cursor {
+
+        val db = this.readableDatabase
+
+        val cursor = db.rawQuery("SELECT * FROM $TIME_FRAME_TABLE WHERE $TIME_FRAME_ITEM_ID = \"$itemId\"", null)
+
+        cursor?.moveToFirst()
+
+        return cursor
+    }
+
+    /**
+     * Transform a cursor to an item
+     */
+    fun cursorToItem(cursor: Cursor): Item {
+
+        /**
+         * Get the item
+         */
+        var item = Item()
+        item.id = cursor.getString(cursor.getColumnIndex(COLLECTION_ID))
+        item.name = cursor.getString(cursor.getColumnIndex(COLLECTION_NAME))
+        item.description = cursor.getString(cursor.getColumnIndex(COLLECTION_DESCRIPTION))
+        item.year = cursor.getShort(cursor.getColumnIndex(COLLECTION_YEAR))
+        item.brand = cursor.getString(cursor.getColumnIndex(COLLECTION_BRAND))
+        item.working = cursor.getInt(cursor.getColumnIndex(COLLECTION_WORKING)) > 0 // Like boolean
+
+        /**
+         * Get all the items
+         */
+        val cursorCategories: Cursor = fetchAllCategories(item.id)
+        if (cursorCategories.moveToFirst()) {
+
+            while (!cursorCategories.isAfterLast) {
+
+                item.categories.add(cursor.getString(cursor.getColumnIndex(CATEGORIES_NAME)))
+                cursorCategories.moveToNext()
+            }
+        }
+
+        /**
+         * Get all the pictures
+         */
+        val cursorPictures: Cursor = fetchAllPictures(item.id)
+        if (cursorPictures.moveToFirst()) {
+
+            while (!cursorPictures.isAfterLast) {
+
+                val id = cursor.getString(cursor.getColumnIndex(PICTURES_ID))
+                val desc = cursor.getString(cursor.getColumnIndex(PICTURES_DESCRIPTION))
+
+                item.pictures[id] = desc
+
+                cursorPictures.moveToNext()
+            }
+        }
+
+        /**
+         * Get all the technical details
+         */
+        val cursorTechnicalDetails: Cursor = fetchAllTechnicalDetails(item.id)
+        if (cursorTechnicalDetails.moveToFirst()) {
+
+            while (!cursorTechnicalDetails.isAfterLast) {
+
+                item.technicalDetails.add(cursor.getString(cursor.getColumnIndex(TECHNICAL_DETAILS_NAME)))
+
+                cursorTechnicalDetails.moveToNext()
+            }
+        }
+
+        /**
+         * Get all the time frame
+         */
+        val cursorTimeFrame: Cursor = fetchAllTimeFrame(item.id)
+        if (cursorTimeFrame.moveToFirst()) {
+
+            while (!cursorTimeFrame.isAfterLast) {
+
+                item.timeFrame.add(cursor.getShort(cursor.getColumnIndex(TIME_FRAME_YEAR)))
+
+                cursorTimeFrame.moveToNext()
+            }
+        }
+
+        return item
+    }
+
+    /**
+     * Fetch the items and put them into the list
+     */
+    @Synchronized fun loadItems() {
+
+        val res: ArrayList<Item> = ArrayList()
+
+        // Get all the items
+        val cursor: Cursor = fetchAllItems()
+
+        if (cursor.moveToFirst()) {
+
+            while (!cursor.isAfterLast) {
+
+                val item: Item = this.cursorToItem(cursor)
+                res.add(item)
+
+                cursor.moveToNext()
+            }
+        }
+
+        this.items = res
     }
 
     /**
      * Return an array list of Items
      */
-    @Synchronized fun getItems(): ArrayList<Item> {
-        return getInstance().items
+    @Synchronized fun getItems(): MutableList<Item> {
+        return this.items
     }
 
     /**
      * Return the item of the array
      */
     @Synchronized fun getItem(index: Int): Item {
-        return getInstance().items[index]
+        return this.items[index]
     }
 }
