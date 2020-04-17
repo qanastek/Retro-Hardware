@@ -3,14 +3,11 @@ package com.example.retro_hardware.controllers
 import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +31,7 @@ class ItemActivity : AppCompatActivity() {
     lateinit var contentSpecs: TextView
     lateinit var status: TextView
     lateinit var imagesList: RecyclerView
+    lateinit var imagesLinearLayout: LinearLayout
 
     companion object {
 
@@ -63,6 +61,7 @@ class ItemActivity : AppCompatActivity() {
         this.contentSpecs = findViewById(R.id.contentSpecs)
         this.status = findViewById(R.id.status)
         this.imagesList = findViewById(R.id.imagesList)
+        this.imagesLinearLayout = findViewById(R.id.imagesLinearLayout)
     }
 
     private fun fillUpFields() {
@@ -136,14 +135,34 @@ class ItemActivity : AppCompatActivity() {
         }
 
         // Images
-        adapter = ImageAdapter(this, this.item.getImagesUrl())
+        var itemImages = this.item.getImagesUrl()
 
-        // If isn't empty
-        imagesList.adapter = adapter
-        imagesList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        // If have images
+        if (itemImages.size > 0) {
 
-        // Update the view
-        adapter.notifyDataSetChanged()
+            // Create the adpater
+            adapter = ImageAdapter(this, itemImages)
+
+            // If isn't empty
+            imagesList.adapter = adapter
+            imagesList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
+            // Update the view
+            adapter.notifyDataSetChanged()
+
+        } else {
+
+            // Create a textView
+            val noImages = TextView(this)
+
+            // Configure it
+            noImages.text = "No images available"
+            noImages.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18F)
+            noImages.setTextColor(ContextCompat.getColor(this,R.color.textColorTertiary))
+
+            // Add it
+            imagesLinearLayout.addView(noImages)
+        }
 
         // Status
         status.text = item.isWorking()

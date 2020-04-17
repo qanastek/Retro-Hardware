@@ -29,17 +29,18 @@
                 android:paddingRight="15dp">
 
                 <SearchView
-                    android:layout_weight="1"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentLeft="true"
+                    android:id="@+id/searching"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_weight="1"
                     android:animateLayoutChanges="true"
-                    app:iconifiedByDefault="true"
-                    app:theme="@style/AppTheme.Toolbar"
                     android:background="?attr/colorPrimary"
+                    app:iconifiedByDefault="true"
+                    app:queryBackground="@android:color/transparent"
                     app:queryHint="@string/search_hint"
-                    app:queryBackground="@android:color/transparent" >
+                    app:theme="@style/AppTheme.Toolbar">
 
                 </SearchView>
 

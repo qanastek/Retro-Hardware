@@ -18,6 +18,9 @@ import com.example.retro_hardware.models.Threads.FetchImage
 
 class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
 
+    lateinit var listView: ListView
+    lateinit var searching: SearchView
+
     companion object {
 
         /**
@@ -40,14 +43,33 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Fetch the database
         collection = Collection(this)
 
-        var listView: ListView = findViewById(R.id.UsersListView)
+        // Initialize fields
+        listView = findViewById(R.id.UsersListView)
+        searching = findViewById(R.id.searching)
 
+        // Searching
+        searching.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                adapter?.filter?.filter(query)
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                adapter?.filter?.filter(newText)
+                return false
+            }
+
+        })
+
+        // Create the adapter
         adapter = UsersAdapter(this)
         listView.adapter = adapter
 
-        // Update the view
+        // Update the adapter
         adapter?.notifyDataSetChanged()
 
         listView.setOnItemClickListener { parent, view, position, id ->
@@ -63,7 +85,7 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
         Toast.makeText(this,"HERE", Toast.LENGTH_LONG)
     }
 
-    public class UsersAdapter(context: Context): BaseAdapter() {
+    public class UsersAdapter(context: Context): BaseAdapter(), Filterable {
 
         /**
          * Context
@@ -87,7 +109,7 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
             // Row
             val row = inflater.inflate(R.layout.item_row, viewGroup, false)
 
-            val item: Item = originalList[position]
+            val item: Item = currentList[position]
 
             // Thumbnail
             val thumb = row.findViewById<ImageView>(R.id.image)
@@ -106,7 +128,7 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
 
         override fun getItem(position: Int): Item {
             Log.d("MainActivity","getItem")
-            return originalList[position]
+            return currentList[position]
         }
 
         override fun getItemId(position: Int): Long {
@@ -115,7 +137,52 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
         }
 
         override fun getCount(): Int {
-            return originalList.size
+            return currentList.size
+        }
+
+        override fun getFilter(): Filter {
+
+            return object : Filter() {
+
+                override fun performFiltering(constraint: CharSequence?): FilterResults {
+
+                    // Filtered list
+                    var filteredList : List<Item> = ArrayList()
+
+                    // If not empty
+                    if (constraint != null) {
+
+                        // For each stored elements
+                        for (item in originalList) {
+
+                            // If the item contains the sequence keep it
+                            if (item.name.toLowerCase().contains(constraint.toString().toLowerCase())) {
+                                filteredList += item
+                            }
+                        }
+                    } else {
+                        filteredList += originalList
+                    }
+
+                    // Convert to filterResults
+                    var res: FilterResults = FilterResults()
+                    res.values = filteredList
+
+                    // Return it
+                    return res
+                }
+
+                override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+
+                    if (results != null) {
+
+                        currentList.clear()
+                        currentList.addAll(results.values as kotlin.collections.Collection<Item>)
+                        notifyDataSetChanged()
+                    }
+                }
+
+            }
         }
 
     }
