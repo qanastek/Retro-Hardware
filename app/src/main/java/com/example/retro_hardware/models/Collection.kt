@@ -10,7 +10,6 @@ import android.net.ConnectivityManager
 import android.util.Log
 import com.example.retro_hardware.models.Threads.FetchItems
 
-
 class Collection : SQLiteOpenHelper {
 
     /**
@@ -32,7 +31,7 @@ class Collection : SQLiteOpenHelper {
         val TAG: String = this::class.java.canonicalName as String
 
         // Current database version
-        const val DATABASE_VERSION: Int = 8
+        const val DATABASE_VERSION: Int = 2
 
         // Database name
         const val DATABASE_NAME = "retro.hardware"
@@ -79,7 +78,7 @@ class Collection : SQLiteOpenHelper {
             val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val networkInfo = connectivityManager.activeNetworkInfo
 
-            Log.d("------------", (networkInfo != null && networkInfo.isConnected).toString())
+            // Log.d("------------", (networkInfo != null && networkInfo.isConnected).toString())
 
             return networkInfo != null && networkInfo.isConnected
         }
@@ -100,6 +99,8 @@ class Collection : SQLiteOpenHelper {
 
         // If the database is null
         if (db == null) { return }
+
+        Log.d("----------","onCreate")
 
         /**
          * Create the collection table
@@ -190,7 +191,7 @@ class Collection : SQLiteOpenHelper {
         // Connect to the db
         val db = this.writableDatabase
 
-        Log.d(TAG, "Add " + item.name + " with id " + item.id);
+        // Log.d(TAG, "Add " + item.name + " with id " + item.id);
 
         // The the content values for the item itself
         val itemValues: ContentValues = contentValuesItem(item)
@@ -228,10 +229,6 @@ class Collection : SQLiteOpenHelper {
             for (picture in item.pictures) {
 
                 val valuesPicture = ContentValues()
-
-                Log.d("------0", picture.key)
-                Log.d("------1", item.id)
-                Log.d("------2", picture.value)
 
                 valuesPicture.put(PICTURES_ID, picture.key)
                 valuesPicture.put(PICTURES_ITEM_ID, item.id)
@@ -392,7 +389,7 @@ class Collection : SQLiteOpenHelper {
         item.description = cursor.getString(cursor.getColumnIndex(COLLECTION_DESCRIPTION))
         item.year = cursor.getShort(cursor.getColumnIndex(COLLECTION_YEAR))
         item.brand = cursor.getString(cursor.getColumnIndex(COLLECTION_BRAND))
-        item.working = cursor.getInt(cursor.getColumnIndex(COLLECTION_WORKING)) > 0 // Like boolean
+        item.working = cursor.getInt(cursor.getColumnIndex(COLLECTION_WORKING)) == 1 // Like boolean
 
         /**
          * Get all the items
@@ -419,7 +416,7 @@ class Collection : SQLiteOpenHelper {
                 val idPic = cursorPictures.getString(cursorPictures.getColumnIndex(PICTURES_ID))
                 val desc = cursorPictures.getString(cursorPictures.getColumnIndex(PICTURES_DESCRIPTION))
 
-                Log.d("------", "$idPic = $desc \\ $idItem")
+                // Log.d("------", "$idPic = $desc \\ $idItem")
 
                 item.pictures[idPic] = desc
 

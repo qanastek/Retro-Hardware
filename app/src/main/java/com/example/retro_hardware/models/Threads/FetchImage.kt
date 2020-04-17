@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.util.Log
 import android.widget.ImageView
+import com.example.retro_hardware.R
 import com.example.retro_hardware.models.Collection
 import com.example.retro_hardware.models.Collection.Companion.isOnline
 import com.example.retro_hardware.models.Item
@@ -30,15 +31,25 @@ class FetchImage: AsyncTask<ImageView, Void, Bitmap> {
         imageView!!.setImageBitmap(result)
     }
 
+    /**
+     * Return the bitmap of the corresponding image
+     */
     override fun doInBackground(vararg params: ImageView?): Bitmap? {
 
-        Log.d("FetchItems","doInBackground")
+        return if(Collection.isOnline(this.context)) {
 
-        if (Collection.isOnline(this.context)) {
             val url = URL(url)
-            return BitmapFactory.decodeStream(url.openConnection().getInputStream())
+
+            var image: Bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream())
+
+            if (image == null) {
+                image = BitmapFactory.decodeResource(this.context.resources, R.drawable.no_image)
+            }
+
+            image
+
         } else {
-            return null
+            BitmapFactory.decodeResource(this.context.resources, R.drawable.no_image)
         }
     }
 

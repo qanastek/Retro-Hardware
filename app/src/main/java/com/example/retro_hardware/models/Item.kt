@@ -79,21 +79,18 @@ class Item(
         return "${Api.BASE_URL}/items/${this.id}/thumbnail"
     }
 
+    /**
+     * Return the working status
+     */
     fun isWorking(): String {
-
-        if (this.working) {
-            return "WORKING"
-        }
-
-        return "BROKEN"
+        return if(this.working) "WORKING" else "BROKEN"
     }
+
+    /**
+     * Return the color of the working status
+     */
     fun isWorkingColor(context: Context): Int {
-
-        if (this.working) {
-            return ContextCompat.getColor(context, R.color.success)
-        }
-
-        return ContextCompat.getColor(context, R.color.danger)
+        return ContextCompat.getColor(context, if(this.working) R.color.success else R.color.danger)
     }
 
     /**

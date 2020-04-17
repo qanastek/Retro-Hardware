@@ -123,6 +123,8 @@ class ItemActivity : AppCompatActivity() {
         adapter.notifyDataSetChanged()
 
         // Status
+        Log.d("--------- d", item.working.toString())
+        Log.d("--------- d", item.isWorking())
         status.text = item.isWorking()
         status.setTextColor(item.isWorkingColor(this))
 

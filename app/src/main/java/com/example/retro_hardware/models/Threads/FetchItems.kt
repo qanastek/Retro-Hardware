@@ -137,6 +137,8 @@ class FetchItems: AsyncTask<Void, Void, String> {
                 item.description = reader.nextString()
             }  else if (name == "name") {
                 item.name = reader.nextString()
+            }  else if (name == "working") {
+                item.working = reader.nextBoolean()
             } else if (name == "categories") {
 
                 reader.beginArray()
