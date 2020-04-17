@@ -31,6 +31,7 @@ class ItemActivity : AppCompatActivity() {
     lateinit var brand: TextView
     lateinit var year: TextView
     lateinit var description: TextView
+    lateinit var contentSpecs: TextView
     lateinit var status: TextView
     lateinit var imagesList: RecyclerView
 
@@ -59,6 +60,7 @@ class ItemActivity : AppCompatActivity() {
         this.brand = findViewById(R.id.brand)
         this.year = findViewById(R.id.year)
         this.description = findViewById(R.id.description)
+        this.contentSpecs = findViewById(R.id.contentSpecs)
         this.status = findViewById(R.id.status)
         this.imagesList = findViewById(R.id.imagesList)
     }
@@ -82,7 +84,7 @@ class ItemActivity : AppCompatActivity() {
         if (item.year.toInt() != 0) {
             this.year.text = item.year.toString()
         } else {
-            this.year.text = "XXXX"
+            this.year.text = "No available"
         }
 
         /**
@@ -112,6 +114,27 @@ class ItemActivity : AppCompatActivity() {
             chipGroup.addView(chip)
         }
 
+        /**
+         * Check if have technicalDetails
+         */
+        if (this.item.technicalDetails.size > 0) {
+
+            var i = 1
+
+            // If yes, add them
+            for (detail in this.item.technicalDetails) {
+
+                if (i % 2 == 0) {
+                    contentSpecs.text = contentSpecs.text.toString() + "\n"
+                }
+
+                contentSpecs.text = contentSpecs.text.toString() + "• " + detail
+                i++
+            }
+        } else {
+            contentSpecs.text = "No technical details available"
+        }
+
         // Images
         adapter = ImageAdapter(this, this.item.getImagesUrl())
 
@@ -123,8 +146,6 @@ class ItemActivity : AppCompatActivity() {
         adapter.notifyDataSetChanged()
 
         // Status
-        Log.d("--------- d", item.working.toString())
-        Log.d("--------- d", item.isWorking())
         status.text = item.isWorking()
         status.setTextColor(item.isWorkingColor(this))
 
@@ -142,9 +163,6 @@ class ItemActivity : AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
-            Log.d("----",images.size.toString())
-            Log.d("----",images.toString())
 
             // Image url
             val imageUrl: String = images[position]

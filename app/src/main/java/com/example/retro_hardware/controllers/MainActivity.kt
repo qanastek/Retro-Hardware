@@ -70,6 +70,16 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
          */
         private var context: Context = context
 
+        /**
+         * The original list
+         */
+        var originalList = collection.getItems()
+
+        /**
+         * The current list
+         */
+        var currentList = ArrayList(originalList)
+
         override fun getView(position: Int, convertView: View?, viewGroup: ViewGroup?): View {
 
             val inflater = LayoutInflater.from(this.context)
@@ -77,7 +87,7 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
             // Row
             val row = inflater.inflate(R.layout.item_row, viewGroup, false)
 
-            val item: Item =  collection.getItem(position)
+            val item: Item = originalList[position]
 
             // Thumbnail
             val thumb = row.findViewById<ImageView>(R.id.image)
@@ -96,7 +106,7 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
 
         override fun getItem(position: Int): Item {
             Log.d("MainActivity","getItem")
-            return collection.getItem(position)
+            return originalList[position]
         }
 
         override fun getItemId(position: Int): Long {
@@ -105,7 +115,7 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
         }
 
         override fun getCount(): Int {
-            return collection.getItems().size
+            return originalList.size
         }
 
     }

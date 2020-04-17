@@ -65,7 +65,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
-                        android:text="WORKING"
+                        android:text="STATUS"
                         android:textColor="@color/textColorSecondary"
                         android:textSize="20dp"
                         android:textStyle="bold" />
@@ -75,11 +75,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
-                        android:text="STATUS"
                         android:textAllCaps="true"
                         android:textColor="@color/success"
                         android:textSize="15dp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="WORKING" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -181,9 +181,9 @@
                     android:justificationMode="inter_word"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse lorem nulla, ullamcorper quis congue ac, laoreet ut mauris. Curabitur quis pellentesque velit."
                     android:textColor="@color/textColorTertiary"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse lorem nulla, ullamcorper quis congue ac, laoreet ut mauris. Curabitur quis pellentesque velit." />
 
             </LinearLayout>
 
@@ -215,9 +215,10 @@
                         android:id="@+id/year"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="1986"
+                        android:text="XXXX"
                         android:textColor="@color/textColorTertiary"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        tools:text="1986" />
 
                 </LinearLayout>
 
@@ -243,24 +244,16 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/content1"
+                    android:id="@+id/contentSpecs"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:capitalize="sentences"
                     android:justificationMode="inter_word"
-                    android:text="• Lorem ipsum dolor sit, consectetur adipiscing elit."
+                    android:lineSpacingMultiplier="1.1"
                     android:textColor="@color/textColorTertiary"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/content2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:justificationMode="inter_word"
-                    android:text="• Lorem ipsum dolor sit, consectetur adipiscing elit."
-                    android:textColor="@color/textColorTertiary"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    tools:text="• Lorem ipsum dolor sit, consectetur adipiscing elit." />
 
             </LinearLayout>
 
