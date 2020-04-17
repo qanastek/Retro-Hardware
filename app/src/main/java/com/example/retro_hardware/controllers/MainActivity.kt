@@ -152,11 +152,14 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
                     // If not empty
                     if (constraint != null) {
 
+                        // The typed text
+                        var currentText = constraint.toString().toLowerCase()
+
                         // For each stored elements
                         for (item in originalList) {
 
-                            // If the item contains the sequence keep it
-                            if (item.name.toLowerCase().contains(constraint.toString().toLowerCase())) {
+                            // If the item name or brand contains the sequence then keep it
+                            if (item.name.toLowerCase().contains(currentText) || (item.brand.toLowerCase().contains(currentText))) {
                                 filteredList += item
                             }
                         }
