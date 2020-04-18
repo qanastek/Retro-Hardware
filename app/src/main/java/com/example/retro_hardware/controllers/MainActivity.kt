@@ -1,5 +1,6 @@
 package com.example.retro_hardware.controllers
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -20,6 +21,11 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
 
     lateinit var listView: ListView
     lateinit var searching: SearchView
+
+    lateinit var dialog: Dialog
+    lateinit var layInflat: LayoutInflater
+    lateinit var viewFilter: View
+    lateinit var rootLayout: LinearLayout
 
     companion object {
 
@@ -79,6 +85,39 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
             intent.putExtra("item", item)
             startActivity(intent)
         }
+
+        /**
+         * Filtering
+         */
+        layInflat = LayoutInflater.from(applicationContext)
+        viewFilter = layoutInflater.inflate(R.layout.filters,null)
+        dialog = Dialog(this, android.R.style.Theme_NoTitleBar_Fullscreen)
+        dialog.setContentView(viewFilter)
+
+        rootLayout = viewFilter.findViewById(R.id.root)
+
+        // rootLayout.setOnClickListener { dialog.dismiss() }
+    }
+
+    /**
+     * When the user trigger the filtering button
+     */
+    fun filters(view: View) {
+        dialog.show()
+    }
+
+    /**
+     * Close the filters modal
+     */
+    fun cancel(view: View) {
+        dialog.dismiss()
+    }
+
+    /**
+     * Apply the filters and close the modal
+     */
+    fun apply(view: View) {
+        dialog.dismiss()
     }
 
     override fun onRefresh() {

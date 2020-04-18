@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    android:padding="15dp"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="13dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="FILTERS"
+        android:textAllCaps="true"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="27sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="13dp"
+        android:background="?android:attr/listDivider"
+        android:backgroundTint="@color/textColorPrimary"/>
+
+    <TextView
+        android:id="@+id/labelSortBy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:text="SORT BY"
+        android:textAllCaps="true"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ToggleButton
+                android:id="@+id/chronology"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:text="chronology"
+                android:textOff="chronology"
+                android:textOn="chronology" />
+
+            <ToggleButton
+                android:id="@+id/defaultSort"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:text="default"
+                android:textOff="default"
+                android:textOn="default" />
+
+            <ToggleButton
+                android:id="@+id/categories"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:text="categories"
+                android:textOff="categories"
+                android:textOn="categories" />
+
+        </LinearLayout>
+    </RadioGroup>
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="13dp"
+        android:background="?android:attr/listDivider"
+        android:backgroundTint="@color/textColorPrimary" />
+
+    <TextView
+        android:id="@+id/labelStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:text="status"
+        android:textAllCaps="true"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ToggleButton
+                android:id="@+id/working"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:text="working"
+                android:textOff="working"
+                android:textOn="working" />
+
+            <ToggleButton
+                android:id="@+id/toggleButton3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:text="both"
+                android:textOff="both"
+                android:textOn="both" />
+
+            <ToggleButton
+                android:id="@+id/broken"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:text="broken"
+                android:textOff="broken"
+                android:textOn="broken" />
+
+        </LinearLayout>
+    </RadioGroup>
+
+    <View
+        android:id="@+id/view3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="13dp"
+        android:background="?android:attr/listDivider"
+        android:backgroundTint="@color/textColorPrimary" />
+
+    <TextView
+        android:id="@+id/labelYear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:text="Year"
+        android:textAllCaps="true"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/yearSelector"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/startYear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_weight="3"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="MIN"
+            android:textAllCaps="true"
+            android:textColor="@color/textColorPrimary" />
+
+        <SeekBar
+            android:id="@+id/yearBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:max="2020"
+            android:min="1975"
+            android:progressBackgroundTint="@color/textColorPrimary" />
+
+        <TextView
+            android:id="@+id/endYear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_weight="3"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="MAX"
+            android:textAllCaps="true"
+            android:textColor="@color/textColorPrimary" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="13dp"
+        android:background="?android:attr/listDivider"
+        android:backgroundTint="@color/textColorPrimary" />
+
+    <TextView
+        android:id="@+id/labelBrand"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:text="BRAND"
+        android:textAllCaps="true"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.chip.Chip
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="APPLE"
+            android:textAllCaps="true" />
+
+        <com.google.android.material.chip.Chip
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="IBM"
+            android:textAllCaps="true" />
+
+        <com.google.android.material.chip.Chip
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MOTOROLA"
+            android:textAllCaps="true" />
+
+        <com.google.android.material.chip.Chip
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TELIC ALCATEL"
+            android:textAllCaps="true" />
+
+        <com.google.android.material.chip.Chip
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PANASONIC"
+            android:textAllCaps="true" />
+
+    </com.google.android.material.chip.ChipGroup>
+
+    <View
+        android:id="@+id/view4"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="13dp"
+        android:background="?android:attr/listDivider"
+        android:backgroundTint="@color/textColorPrimary" />
+
+    <TextView
+        android:id="@+id/labelCategories"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:text="CATEGORIES"
+        android:textAllCaps="true"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.chip.Chip
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SUPPORT DE STOCKAGE"
+            android:textAllCaps="true" />
+
+        <com.google.android.material.chip.Chip
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PERIPHERIQUE"
+            android:textAllCaps="true" />
+
+        <com.google.android.material.chip.Chip
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="RESEAU"
+            android:textAllCaps="true" />
+
+        <com.google.android.material.chip.Chip
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="8 BITS"
+            android:textAllCaps="true" />
+
+        <com.google.android.material.chip.Chip
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ORDINATEUR"
+            android:textAllCaps="true" />
+
+    </com.google.android.material.chip.ChipGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="15dp">
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:onClick="cancel"
+            android:text="cancel"
+            android:textAllCaps="true" />
+
+        <Button
+            android:id="@+id/apply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:onClick="apply"
+            android:text="apply"
+            android:textAllCaps="true" />
+    </LinearLayout>
+
+</LinearLayout>

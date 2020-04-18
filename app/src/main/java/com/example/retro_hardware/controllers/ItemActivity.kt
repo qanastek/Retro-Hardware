@@ -1,6 +1,7 @@
 package com.example.retro_hardware.controllers
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.TypedValue
@@ -146,6 +147,9 @@ class ItemActivity : AppCompatActivity() {
             // If isn't empty
             imagesList.adapter = adapter
             imagesList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
+            // imagesList.setOnClickListener()
+            // val imageClicked: String? = adapter?.getItem(position)
 
             // Update the view
             adapter.notifyDataSetChanged()
