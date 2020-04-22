@@ -1,7 +1,6 @@
 package com.example.retro_hardware.controllers
 
 import android.content.Context
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.TypedValue
@@ -13,9 +12,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.retro_hardware.R
 import com.example.retro_hardware.models.Item
-import com.example.retro_hardware.models.Threads.FetchImage
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 
@@ -31,6 +30,7 @@ class ItemActivity : AppCompatActivity() {
     lateinit var description: TextView
     lateinit var contentSpecs: TextView
     lateinit var status: TextView
+    lateinit var image: ImageView
     lateinit var imagesList: RecyclerView
     lateinit var imagesLinearLayout: LinearLayout
 
@@ -62,6 +62,7 @@ class ItemActivity : AppCompatActivity() {
         this.contentSpecs = findViewById(R.id.contentSpecs)
         this.status = findViewById(R.id.status)
         this.imagesList = findViewById(R.id.imagesList)
+        this.image = findViewById(R.id.image)
         this.imagesLinearLayout = findViewById(R.id.imagesLinearLayout)
     }
 
@@ -84,8 +85,10 @@ class ItemActivity : AppCompatActivity() {
         if (item.year.toInt() != 0) {
             this.year.text = item.year.toString()
         } else {
-            this.year.text = "No available"
+            this.year.text = "Not available"
         }
+
+        Glide.with(this).load(item!!.getUrlThumbnail()).placeholder(R.drawable.no_image).into(image)
 
         /**
          * Check if have categories
@@ -191,7 +194,7 @@ class ItemActivity : AppCompatActivity() {
             val imageUrl: String = images[position]
 
             // Get image
-            FetchImage(holder.image, imageUrl, context).execute()
+            Glide.with(context).load(imageUrl).centerCrop().placeholder(R.drawable.no_image).into(holder.image)
         }
 
         override fun getItemCount(): Int {

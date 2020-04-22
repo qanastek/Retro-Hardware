@@ -11,10 +11,10 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.bumptech.glide.Glide
 import com.example.retro_hardware.R
 import com.example.retro_hardware.models.Collection
 import com.example.retro_hardware.models.Item
-import com.example.retro_hardware.models.Threads.FetchImage
 
 
 class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
@@ -26,6 +26,9 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
     lateinit var layInflat: LayoutInflater
     lateinit var viewFilter: View
     lateinit var rootLayout: LinearLayout
+
+    lateinit var yearStart: EditText
+    lateinit var yearEnd: EditText
 
     companion object {
 
@@ -96,6 +99,9 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
 
         rootLayout = viewFilter.findViewById(R.id.root)
 
+        yearStart = viewFilter.findViewById(R.id.yearStart)
+        yearEnd = viewFilter.findViewById(R.id.yearEnd)
+
         // rootLayout.setOnClickListener { dialog.dismiss() }
     }
 
@@ -152,7 +158,7 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
 
             // Thumbnail
             val thumb = row.findViewById<ImageView>(R.id.image)
-            FetchImage(thumb, item!!.getUrlThumbnail(),this.context).execute()
+            Glide.with(this.context).load(item!!.getUrlThumbnail()).centerCrop().placeholder(R.drawable.no_image).into(thumb)
 
             // Name
             val nameText = row.findViewById<TextView>(R.id.name)
