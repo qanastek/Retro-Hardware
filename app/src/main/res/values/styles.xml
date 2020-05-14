@@ -29,4 +29,9 @@
     <style name="CalenderViewWeekCustomText" parent="android:TextAppearance.DeviceDefault.Small">
         <item name="android:textColor">@color/colorAccent</item>
     </style>
+
+    <style name="ChipFilter" parent="@style/Widget.MaterialComponents.Chip.Filter">
+        <item name="android:textColor">@color/white</item>
+        <item name="chipBackgroundColor">@color/chip_selector</item>
+    </style>
 </resources>

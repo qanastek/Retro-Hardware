@@ -158,6 +158,10 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
 
             // Thumbnail
             val thumb = row.findViewById<ImageView>(R.id.image)
+
+            /**
+             * Load the image, reduce the resolution and put it in the cache
+             */
             Glide.with(this.context).load(item!!.getUrlThumbnail()).centerCrop().placeholder(R.drawable.no_image).into(thumb)
 
             // Name
