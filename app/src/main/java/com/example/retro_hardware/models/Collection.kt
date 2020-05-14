@@ -192,6 +192,36 @@ class Collection : SQLiteOpenHelper {
     }
 
     /**
+     * Return the minimum and maximum date
+     */
+    fun getExtremumYears(): Pair<Int,Int> {
+
+        val db = this.readableDatabase
+
+        val cursor = db.rawQuery("SELECT MIN($COLLECTION_YEAR) AS \'MIN\', MAX($COLLECTION_YEAR) AS \'MAX\' FROM $COLLECTION_TABLE WHERE $COLLECTION_YEAR > 0" , null)
+
+        cursor?.moveToFirst()
+
+        // Min and max years
+        var min: Int = 0
+        var max: Int = 9999
+
+        if (cursor.moveToFirst()) {
+
+            // Load all the categories
+            while (!cursor.isAfterLast) {
+
+                min = cursor.getInt(cursor.getColumnIndex("MIN"))
+                max = cursor.getInt(cursor.getColumnIndex("MAX"))
+
+                break;
+            }
+        }
+
+        return Pair(min,max)
+    }
+
+    /**
      * Return all the brands available
      */
     fun getBrands(): ArrayList<String> {

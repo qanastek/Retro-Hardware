@@ -1,13 +1,18 @@
 package com.example.retro_hardware.controllers
 
+import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,8 +26,14 @@ import com.google.android.material.chip.ChipGroup
 
 class ItemActivity : AppCompatActivity() {
 
+    // Current item
     lateinit var item: Item
+    // List of images
+    lateinit var itemImages: ArrayList<String>
 
+    /**
+     * Fields
+     */
     lateinit var chipGroup: ChipGroup
     lateinit var productName: TextView
     lateinit var brand: TextView
@@ -41,6 +52,14 @@ class ItemActivity : AppCompatActivity() {
 
         // The list of images
         lateinit var images: List<String>
+
+        /**
+         * Zoom
+         */
+        lateinit var dialog: Dialog
+        lateinit var viewZoom: View
+        lateinit var imageViewZoom: ImageView
+        lateinit var descriptionZoom: TextView
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,8 +70,12 @@ class ItemActivity : AppCompatActivity() {
 
         initFields()
         fillUpFields()
+        initZoom()
     }
 
+    /**
+     * Initialize the activity
+     */
     private fun initFields() {
         this.chipGroup = findViewById(R.id.chipGroup)
         this.productName = findViewById(R.id.productName)
@@ -66,6 +89,24 @@ class ItemActivity : AppCompatActivity() {
         this.imagesLinearLayout = findViewById(R.id.imagesLinearLayout)
     }
 
+    /**
+     * Initialize the zoom modal
+     */
+    fun initZoom() {
+
+        // Basics
+        viewZoom = layoutInflater.inflate(R.layout.zoom_image,null)
+        dialog = Dialog(this, android.R.style.Theme_NoTitleBar_Fullscreen)
+        dialog.setContentView(viewZoom)
+
+        // Link fields
+        imageViewZoom = viewZoom.findViewById(R.id.imageViewZoom)
+        descriptionZoom = viewZoom.findViewById(R.id.descriptionZoom)
+    }
+
+    /**
+     * Fill up the fields of the ItemActivity
+     */
     private fun fillUpFields() {
 
         this.productName.text = item.name
@@ -88,6 +129,7 @@ class ItemActivity : AppCompatActivity() {
             this.year.text = "Not available"
         }
 
+        // Load the image
         Glide.with(this).load(item!!.getUrlThumbnail()).placeholder(R.drawable.no_image).into(image)
 
         /**
@@ -140,7 +182,7 @@ class ItemActivity : AppCompatActivity() {
         }
 
         // Images
-        var itemImages = this.item.getImagesUrl()
+        this.itemImages = this.item.getImagesUrl()
 
         // If have images
         if (itemImages.size > 0) {
@@ -178,6 +220,9 @@ class ItemActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * The adapter for the horizontal recyclerView of images
+     */
     public class ImageAdapter(private val context: Context, private val images: List<String>): RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -196,6 +241,25 @@ class ItemActivity : AppCompatActivity() {
 
             // Get image
             Glide.with(context).load(imageUrl).centerCrop().placeholder(R.drawable.no_image).into(holder.image)
+
+            // On click on image zoom in
+            holder.image.setOnClickListener() {
+
+                val item: String = images[position]
+
+                // Load the image
+                Glide.with(ItemActivity.viewZoom).load(item).into(imageViewZoom)
+
+                // Set description
+                descriptionZoom.text = item
+
+                // Display the modal
+                dialog.show()
+            }
+        }
+
+        override fun getItemId(position: Int): Long {
+            return position.toLong()
         }
 
         override fun getItemCount(): Int {
@@ -211,6 +275,5 @@ class ItemActivity : AppCompatActivity() {
             }
 
         }
-
     }
 }

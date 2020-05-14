@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
     lateinit var layInflat: LayoutInflater
     lateinit var viewFilter: View
     lateinit var rootLayout: LinearLayout
+    lateinit var scrollFilter: ScrollView
 
     lateinit var listView: ListView
     lateinit var searching: SearchView
@@ -45,6 +46,9 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
     lateinit var status: RadioGroup
     lateinit var categories: ChipGroup
     lateinit var brands: ChipGroup
+    lateinit var defaultOrder: RadioButton
+    lateinit var alphabetical: RadioButton
+    lateinit var both: RadioButton
 
     companion object {
 
@@ -131,7 +135,11 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
         dialog.setContentView(viewFilter)
 
         rootLayout = viewFilter.findViewById(R.id.root)
+        scrollFilter = viewFilter.findViewById(R.id.scrollFilter)
 
+        /**
+         * Fields
+         */
         yearStart = viewFilter.findViewById(R.id.yearStart)
         yearEnd = viewFilter.findViewById(R.id.yearEnd)
         order = viewFilter.findViewById(R.id.order)
@@ -140,16 +148,23 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
         status = viewFilter.findViewById(R.id.status)
         categories = viewFilter.findViewById(R.id.categories)
         brands = viewFilter.findViewById(R.id.brands)
+        defaultOrder = viewFilter.findViewById(R.id.defaultOrder)
+        alphabetical = viewFilter.findViewById(R.id.alphabetical)
+        both = viewFilter.findViewById(R.id.both)
     }
 
     /**
-     * Initialize th efilters view
+     * Initialize the filters view
      */
     private fun initializeFilters() {
 
         // Clear all chips currently inside
         categories.removeAllViews()
         brands.removeAllViews()
+
+        var extreme: Pair<Int,Int>  = collection.getExtremumYears()
+        yearStart.setText(extreme.first.toString(), TextView.BufferType.EDITABLE)
+        yearEnd.setText(extreme.second.toString(), TextView.BufferType.EDITABLE)
 
         // Load all the categories into the filter modal
         for (category in collection.getCategories()) {
@@ -163,6 +178,7 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
             chip.setChipBackgroundColorResource(R.color.chip_selector)
             categories.addView(chip)
         }
+
         // Load all the brands into the filter modal
         for (brand in collection.getBrands()) {
 
@@ -181,6 +197,9 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
      * When the user trigger the filtering button
      */
     fun filters(view: View) {
+
+        // Unfocus the elements
+        clearFocuses()
         dialog.show()
     }
 
@@ -188,7 +207,41 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
      * Close the filters modal
      */
     fun cancel(view: View) {
+
+        /**
+         * Clear fields
+         */
+        yearStart.text.clear()
+        yearEnd.text.clear()
+        order.isChecked = true
+        sortBy.clearCheck()
+        orderBy.clearCheck()
+        status.clearCheck()
+        categories.clearCheck()
+        brands.clearCheck()
+        // Go to the top of the scroll view
+        scrollFilter.scrollTo(0,0)
+
+        /**
+         * Set default
+         */
+        defaultOrder.isChecked = true
+        alphabetical.isChecked = true
+        both.isChecked = true
+
+        var extreme: Pair<Int,Int>  = collection.getExtremumYears()
+        yearStart.setText(extreme.first.toString(), TextView.BufferType.EDITABLE)
+        yearEnd.setText(extreme.second.toString(), TextView.BufferType.EDITABLE)
+
         dialog.dismiss()
+    }
+
+    /**
+     * Clear the focus of the filters view
+     */
+    private fun clearFocuses() {
+        yearStart.clearFocus()
+        yearEnd.clearFocus()
     }
 
     /**
@@ -209,15 +262,20 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
         Log.d("apply", "----------------")
 
         Log.d("apply", orderText)
-        Log.d("apply",sortRes.text.toString())
+
         Log.d("apply",orderByRes.text.toString())
+        Log.d("apply",sortRes.text.toString())
         Log.d("apply",statusRes.text.toString())
+
+        // If empty take min/max dates
         Log.d("apply",yearStart.text.toString())
         Log.d("apply",yearEnd.text.toString())
 
+        // If empty take all brands
         var selectedBrands: ArrayList<String> = getAllTheSelectedBrands()
         Log.d("apply", selectedBrands.toString())
 
+        // If empty take all categories
         var selectedCategories: ArrayList<String> = getAllTheSelectedCategories()
         Log.d("apply", selectedCategories.toString())
 
