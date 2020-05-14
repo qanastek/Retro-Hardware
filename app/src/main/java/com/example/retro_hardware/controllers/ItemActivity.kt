@@ -107,6 +107,7 @@ class ItemActivity : AppCompatActivity() {
                 chipGroup.addView(chip)
 
             }
+
         } else {
 
             val chip = Chip(chipGroup.context)

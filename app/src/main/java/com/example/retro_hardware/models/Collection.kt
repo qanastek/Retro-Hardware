@@ -164,6 +164,62 @@ class Collection : SQLiteOpenHelper {
     }
 
     /**
+     * Return all the categories available
+     */
+    fun getCategories(): ArrayList<String> {
+
+        val db = this.readableDatabase
+
+        val cursor = db.rawQuery("SELECT DISTINCT $CATEGORIES_NAME FROM $CATEGORIES_TABLE" , null)
+
+        cursor?.moveToFirst()
+
+        val res: ArrayList<String> = ArrayList()
+
+        if (cursor.moveToFirst()) {
+
+            // Load all the categories
+            while (!cursor.isAfterLast) {
+
+                val category: String = cursor.getString(cursor.getColumnIndex(CATEGORIES_NAME))
+                res.add(category)
+
+                cursor.moveToNext()
+            }
+        }
+
+        return res
+    }
+
+    /**
+     * Return all the brands available
+     */
+    fun getBrands(): ArrayList<String> {
+
+        val db = this.readableDatabase
+
+        val cursor = db.rawQuery("SELECT DISTINCT $COLLECTION_BRAND FROM $COLLECTION_TABLE WHERE LENGTH($COLLECTION_BRAND) > 1" , null)
+
+        cursor?.moveToFirst()
+
+        val res: ArrayList<String> = ArrayList()
+
+        if (cursor.moveToFirst()) {
+
+            // Load all the categories
+            while (!cursor.isAfterLast) {
+
+                val brand: String = cursor.getString(cursor.getColumnIndex(COLLECTION_BRAND))
+                res.add(brand)
+
+                cursor.moveToNext()
+            }
+        }
+
+        return res
+    }
+
+    /**
      * Fills the ContentValues of the item with a Item
      */
     fun contentValuesItem(item: Item): ContentValues {

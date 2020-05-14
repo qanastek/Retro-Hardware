@@ -52,42 +52,28 @@
             android:textStyle="bold" />
 
         <RadioGroup
+            android:id="@+id/orderBy"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:orientation="horizontal">
 
             <RadioButton
-                android:id="@+id/yearsSort"
+                android:id="@+id/categorySort"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/round_radio_btn_left_selector"
                 android:button="@android:color/transparent"
-                android:checked="false"
+                android:checked="true"
                 android:gravity="center"
-                android:text="categories"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
+                android:text="categories"
                 android:textOff="categories"
                 android:textOn="categories" />
 
             <RadioButton
-                android:id="@+id/defaultSort"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/round_radio_btn_middle_selector"
-                android:button="@android:color/transparent"
-                android:checked="true"
-                android:gravity="center"
-                android:text="default"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textOff="default"
-                android:textOn="default" />
-
-            <RadioButton
-                android:id="@+id/categorySort"
+                android:id="@+id/yearSort"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -95,9 +81,9 @@
                 android:button="@android:color/transparent"
                 android:checked="false"
                 android:gravity="center"
-                android:text="chronology"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
+                android:text="chronology"
                 android:textOff="chronology"
                 android:textOn="chronology" />
 
@@ -123,42 +109,67 @@
             android:textSize="25sp"
             android:textStyle="bold" />
 
-        <RadioGroup
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/alphabetique"
+            <RadioGroup
+                android:id="@+id/sortBy"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/round_radio_btn_left_selector"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/alphabetical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/round_radio_btn_left_selector"
+                    android:button="@android:color/transparent"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:text="alphabetical"
+                    android:textOff="alphabetical"
+                    android:textOn="alphabetical" />
+
+                <RadioButton
+                    android:id="@+id/chronology"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/round_radio_btn_right_selector"
+                    android:button="@android:color/transparent"
+                    android:checked="false"
+                    android:gravity="center"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:text="chronological"
+                    android:textOff="chronological"
+                    android:textOn="chronological" />
+
+            </RadioGroup>
+
+            <ToggleButton
+                android:id="@+id/order"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:background="@drawable/round_radio_btn_selector"
                 android:button="@android:color/transparent"
+                android:gravity="center"
                 android:checked="true"
-                android:gravity="center"
-                android:text="alphabétique"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textOff="alphabétique"
-                android:textOn="alphabétique" />
+                android:layout_marginLeft="10dp"
+                android:text="ASC"
+                android:textOff="DESC"
+                android:textOn="ASC" />
 
-            <RadioButton
-                android:id="@+id/chronology"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/round_radio_btn_right_selector"
-                android:button="@android:color/transparent"
-                android:checked="false"
-                android:gravity="center"
-                android:text="chronology"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textOff="chronology"
-                android:textOn="chronology" />
-
-        </RadioGroup>
+        </LinearLayout>
 
         <View
             android:id="@+id/view5"
@@ -181,6 +192,7 @@
             android:textStyle="bold" />
 
         <RadioGroup
+            android:id="@+id/status"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:orientation="horizontal">
@@ -201,7 +213,7 @@
                 android:textOn="working" />
 
             <RadioButton
-                android:id="@+id/toggleButton3"
+                android:id="@+id/both"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -338,6 +350,7 @@
             android:textStyle="bold" />
 
         <com.google.android.material.chip.ChipGroup
+            android:id="@+id/brands"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -399,44 +412,9 @@
             android:textStyle="bold" />
 
         <com.google.android.material.chip.ChipGroup
+            android:id="@+id/categories"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <com.google.android.material.chip.Chip
-                style="@style/ChipFilter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="SUPPORT DE STOCKAGE"
-                android:textAllCaps="true"
-                android:checked="true" />
-
-            <com.google.android.material.chip.Chip
-                style="@style/ChipFilter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="PERIPHERIQUE"
-                android:textAllCaps="true" />
-
-            <com.google.android.material.chip.Chip
-                style="@style/ChipFilter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="RESEAU"
-                android:textAllCaps="true" />
-
-            <com.google.android.material.chip.Chip
-                style="@style/ChipFilter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="8 BITS"
-                android:textAllCaps="true" />
-
-            <com.google.android.material.chip.Chip
-                style="@style/ChipFilter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ORDINATEUR"
-                android:textAllCaps="true" />
 
         </com.google.android.material.chip.ChipGroup>
 

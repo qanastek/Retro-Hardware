@@ -3,6 +3,7 @@ package com.example.retro_hardware.controllers
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,25 +11,40 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.children
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.example.retro_hardware.R
 import com.example.retro_hardware.models.Collection
 import com.example.retro_hardware.models.Item
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 
 
 class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
 
-    lateinit var listView: ListView
-    lateinit var searching: SearchView
-
+    /**
+     * Main screen
+     */
     lateinit var dialog: Dialog
     lateinit var layInflat: LayoutInflater
     lateinit var viewFilter: View
     lateinit var rootLayout: LinearLayout
 
+    lateinit var listView: ListView
+    lateinit var searching: SearchView
+
+    /**
+     * Filtering window
+     */
     lateinit var yearStart: EditText
     lateinit var yearEnd: EditText
+    lateinit var order: ToggleButton
+    lateinit var sortBy: RadioGroup
+    lateinit var orderBy: RadioGroup
+    lateinit var status: RadioGroup
+    lateinit var categories: ChipGroup
+    lateinit var brands: ChipGroup
 
     companion object {
 
@@ -59,20 +75,7 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
         listView = findViewById(R.id.UsersListView)
         searching = findViewById(R.id.searching)
 
-        // Searching
-        searching.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
-
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                adapter?.filter?.filter(query)
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                adapter?.filter?.filter(newText)
-                return false
-            }
-
-        })
+        listenSearch()
 
         // Create the adapter
         adapter = UsersAdapter(this)
@@ -89,9 +92,39 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
             startActivity(intent)
         }
 
-        /**
-         * Filtering
-         */
+        // Link the fields of the filters modal
+        linkFiltersView()
+
+        // Initialize the filters modal
+        initializeFilters()
+    }
+
+    /**
+     * Listen for the searchBar
+     */
+    private fun listenSearch() {
+
+        // Searching
+        searching.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                adapter?.filter?.filter(query)
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                adapter?.filter?.filter(newText)
+                return false
+            }
+
+        })
+    }
+
+    /**
+     * Link the controller with the filters view
+     */
+    private fun linkFiltersView() {
+
         layInflat = LayoutInflater.from(applicationContext)
         viewFilter = layoutInflater.inflate(R.layout.filters,null)
         dialog = Dialog(this, android.R.style.Theme_NoTitleBar_Fullscreen)
@@ -101,8 +134,47 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
 
         yearStart = viewFilter.findViewById(R.id.yearStart)
         yearEnd = viewFilter.findViewById(R.id.yearEnd)
+        order = viewFilter.findViewById(R.id.order)
+        sortBy = viewFilter.findViewById(R.id.sortBy)
+        orderBy = viewFilter.findViewById(R.id.orderBy)
+        status = viewFilter.findViewById(R.id.status)
+        categories = viewFilter.findViewById(R.id.categories)
+        brands = viewFilter.findViewById(R.id.brands)
+    }
 
-        // rootLayout.setOnClickListener { dialog.dismiss() }
+    /**
+     * Initialize th efilters view
+     */
+    private fun initializeFilters() {
+
+        // Clear all chips currently inside
+        categories.removeAllViews()
+        brands.removeAllViews()
+
+        // Load all the categories into the filter modal
+        for (category in collection.getCategories()) {
+
+            val chip = Chip(categories.context, null, R.style.ChipFilter)
+            chip.text = category.toUpperCase()
+            chip.isClickable = true
+            chip.isCheckable = true
+            chip.isAllCaps = true
+            chip.setTextColor(Color.WHITE)
+            chip.setChipBackgroundColorResource(R.color.chip_selector)
+            categories.addView(chip)
+        }
+        // Load all the brands into the filter modal
+        for (brand in collection.getBrands()) {
+
+            val chip = Chip(brands.context, null, R.style.ChipFilter)
+            chip.text = brand.toUpperCase()
+            chip.isClickable = true
+            chip.isCheckable = true
+            chip.isAllCaps = true
+            chip.setTextColor(Color.WHITE)
+            chip.setChipBackgroundColorResource(R.color.chip_selector)
+            brands.addView(chip)
+        }
     }
 
     /**
@@ -123,7 +195,83 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
      * Apply the filters and close the modal
      */
     fun apply(view: View) {
+
+        /**
+         * Fetch the results
+         */
+        var orderText: String =  if(order.isChecked) order.textOn.toString() else order.textOff.toString()
+
+        val sortRes = dialog.findViewById<RadioButton>(sortBy.checkedRadioButtonId)
+        val orderByRes = dialog.findViewById<RadioButton>(orderBy.checkedRadioButtonId)
+        val statusRes = dialog.findViewById<RadioButton>(status.checkedRadioButtonId)
+
+        // Debug
+        Log.d("apply", "----------------")
+
+        Log.d("apply", orderText)
+        Log.d("apply",sortRes.text.toString())
+        Log.d("apply",orderByRes.text.toString())
+        Log.d("apply",statusRes.text.toString())
+        Log.d("apply",yearStart.text.toString())
+        Log.d("apply",yearEnd.text.toString())
+
+        var selectedBrands: ArrayList<String> = getAllTheSelectedBrands()
+        Log.d("apply", selectedBrands.toString())
+
+        var selectedCategories: ArrayList<String> = getAllTheSelectedCategories()
+        Log.d("apply", selectedCategories.toString())
+
+        Log.d("apply", "----------------")
+
         dialog.dismiss()
+    }
+
+    /**
+     * Return all the selected brands in the filters modal
+     */
+    private fun getAllTheSelectedBrands(): ArrayList<String> {
+
+        var res: ArrayList<String> = ArrayList()
+
+        // Get all the selected brands
+        for (i in 0 until brands.childCount) {
+
+            // Get the current chi^p
+            var currentChip: Chip = brands.getChildAt(i) as Chip
+
+            // If is selected
+            if (currentChip.isChecked){
+
+                // Get it
+                res.add(currentChip.text.toString())
+            }
+        }
+
+        return res
+    }
+
+    /**
+     * Return all the selected categories in the filters modal
+     */
+    private fun getAllTheSelectedCategories(): ArrayList<String> {
+
+        var res: ArrayList<String> = ArrayList()
+
+        // Get all the selected brands
+        for (i in 0 until categories.childCount) {
+
+            // Get the current chi^p
+            var currentChip: Chip = categories.getChildAt(i) as Chip
+
+            // If is selected
+            if (currentChip.isChecked){
+
+                // Get it
+                res.add(currentChip.text.toString())
+            }
+        }
+
+        return res
     }
 
     override fun onRefresh() {
@@ -176,12 +324,10 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
         }
 
         override fun getItem(position: Int): Item {
-            Log.d("MainActivity","getItem")
             return currentList[position]
         }
 
         override fun getItemId(position: Int): Long {
-            Log.d("MainActivity","getItemId")
             return position.toLong()
         }
 
