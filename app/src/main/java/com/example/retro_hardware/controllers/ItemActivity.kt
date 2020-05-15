@@ -1,16 +1,12 @@
 package com.example.retro_hardware.controllers
 
 import android.app.Dialog
-import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -21,9 +17,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.retro_hardware.R
+import com.example.retro_hardware.models.CalendarAdapter
+import com.example.retro_hardware.models.ImageAdapter
 import com.example.retro_hardware.models.Item
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import kotlin.collections.ArrayList
 
 
 class ItemActivity : AppCompatActivity() {
@@ -47,11 +46,14 @@ class ItemActivity : AppCompatActivity() {
     lateinit var image: ImageView
     lateinit var imagesList: RecyclerView
     lateinit var imagesLinearLayout: LinearLayout
+    lateinit var calendarLayout: LinearLayout
+    lateinit var calendarView: RecyclerView
 
     companion object {
 
-        // Adapter
-        lateinit var adapter: ImageAdapter
+        // Adapters
+        lateinit var adapterImage: ImageAdapter
+        lateinit var adapterCalendar: CalendarAdapter
 
         // The list of images
         lateinit var images: List<String>
@@ -96,6 +98,8 @@ class ItemActivity : AppCompatActivity() {
         this.imagesList = findViewById(R.id.imagesList)
         this.image = findViewById(R.id.image)
         this.imagesLinearLayout = findViewById(R.id.imagesLinearLayout)
+        this.calendarLayout = findViewById(R.id.calendarLayout)
+        this.calendarView = findViewById(R.id.calendarView)
     }
 
     /**
@@ -215,17 +219,14 @@ class ItemActivity : AppCompatActivity() {
         if (itemImages.size > 0) {
 
             // Create the adpater
-            adapter = ImageAdapter(this, itemImages)
+            adapterImage = ImageAdapter(this, itemImages)
 
             // If isn't empty
-            imagesList.adapter = adapter
+            imagesList.adapter = adapterImage
             imagesList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
-            // imagesList.setOnClickListener()
-            // val imageClicked: String? = adapter?.getItem(position)
-
             // Update the view
-            adapter.notifyDataSetChanged()
+            adapterImage.notifyDataSetChanged()
 
         } else {
 
@@ -245,66 +246,34 @@ class ItemActivity : AppCompatActivity() {
         status.text = item.isWorking()
         status.setTextColor(item.isWorkingColor(this))
 
-    }
+        /**
+         * Check if have categories
+         */
+        if (this.item.demos.size > 0) {
 
-    /**
-     * The adapter for the horizontal recyclerView of images
-     */
-    public class ImageAdapter(private val context: Context, private val images: ArrayList<Pair<String,String>>): RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
+            // Create the adpater
+            adapterCalendar = CalendarAdapter(this, this.item)
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            // If isn't empty
+            calendarView.adapter = adapterCalendar
+            calendarView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-            val inflater = LayoutInflater.from(this.context)
+            // Update the view
+            adapterCalendar.notifyDataSetChanged()
 
-            val imageView = inflater.inflate(R.layout.image_gallery_item, parent, false)
+        } else {
 
-            return ViewHolder(imageView)
+            // Create a textView
+            val noImages = TextView(this)
+
+            // Configure it
+            noImages.text = "No dates available"
+            noImages.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18F)
+            noImages.setTextColor(ContextCompat.getColor(this,R.color.textColorTertiary))
+
+            // Add it
+            calendarLayout.addView(noImages)
         }
 
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
-            // Image url
-            lastClickedImage = images[position]
-
-            // URL and Description
-            val imageUrl: String = lastClickedImage.first
-            val imageDesc: String = lastClickedImage.second
-
-            // Get image
-            Glide.with(context).load(imageUrl).centerCrop().placeholder(R.drawable.no_image).into(holder.image)
-
-            /**
-             * On click, zoomIn
-             */
-            holder.image.setOnClickListener() {
-
-                // Load the image
-                Glide.with(ItemActivity.viewZoom).load(imageUrl).into(imageViewZoom)
-
-                // Set description
-                descriptionZoom.text = imageDesc
-
-                // Display the modal
-                dialog.show()
-            }
-        }
-
-        override fun getItemId(position: Int): Long {
-            return position.toLong()
-        }
-
-        override fun getItemCount(): Int {
-            return images.size
-        }
-
-        class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
-
-            var image: ImageView
-
-            init {
-                image = view.findViewById(R.id.image)
-            }
-
-        }
     }
 }

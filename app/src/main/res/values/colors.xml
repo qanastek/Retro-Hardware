@@ -4,7 +4,7 @@
     <color name="colorSelected">#255C91</color>
     <color name="colorPrimary">#434273</color>
     <color name="colorPrimaryDark">#3d3963</color>
-    <color name="colorAccent">#00C7FC</color>
+    <color name="colorAccent">@color/colorSelected</color>
     <color name="textColorPrimary">#cadaf0</color>
     <color name="textColorSecondary">#ffffff</color>
     <color name="textColorTertiary">#b3b3de</color>

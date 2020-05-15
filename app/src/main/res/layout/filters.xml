@@ -298,15 +298,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:backgroundTint="@color/colorAccent"
+                        android:backgroundTint="@color/white"
                         android:ems="10"
                         android:focusedByDefault="false"
                         android:hint="Min year"
                         android:inputType="numberDecimal"
                         android:maxLength="4"
                         android:textAlignment="center"
-                        android:textColor="@color/colorAccent"
-                        android:textColorHint="@color/colorAccent"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white"
                         tools:text="1981" />
 
                     <TextView
@@ -332,15 +332,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:backgroundTint="@color/colorAccent"
+                        android:backgroundTint="@color/white"
                         android:ems="10"
                         android:focusedByDefault="false"
                         android:hint="Max year"
                         android:inputType="numberDecimal"
                         android:maxLength="4"
                         android:textAlignment="center"
-                        android:textColor="@color/colorAccent"
-                        android:textColorHint="@color/colorAccent"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white"
                         tools:text="2001" />
 
                     <TextView
