@@ -57,18 +57,22 @@ class Item(
 
     /**
      * Return a list of links
+     * URL | DESC
      */
-    fun getImagesUrl(): ArrayList<String> {
+    fun getImagesUrl(): ArrayList<Pair<String,String>> {
 
-        // The output list
-        val res: ArrayList<String> = arrayListOf()
+        // The output list:  URL | DESC
+        val res: ArrayList<Pair<String,String>> = arrayListOf()
 
         // For each pictures in teh HashMap
-        for (img in pictures.keys) {
-            val url = this.getUrlImage(img)
-            res.add(url)
-        }
+        for (img in pictures) {
 
+            // URL
+            val url = this.getUrlImage(img.key)
+
+            // Description
+            res.add(Pair<String,String>(url,img.value))
+        }
         return res
     }
 

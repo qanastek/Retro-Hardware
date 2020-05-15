@@ -28,8 +28,8 @@ class ItemActivity : AppCompatActivity() {
 
     // Current item
     lateinit var item: Item
-    // List of images
-    lateinit var itemImages: ArrayList<String>
+    // List of images: URL | DESC
+    lateinit var itemImages: ArrayList<Pair<String,String>>
 
     /**
      * Fields
@@ -181,7 +181,7 @@ class ItemActivity : AppCompatActivity() {
             contentSpecs.text = "No technical details available"
         }
 
-        // Images
+        // Fetch the images
         this.itemImages = this.item.getImagesUrl()
 
         // If have images
@@ -223,7 +223,7 @@ class ItemActivity : AppCompatActivity() {
     /**
      * The adapter for the horizontal recyclerView of images
      */
-    public class ImageAdapter(private val context: Context, private val images: List<String>): RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
+    public class ImageAdapter(private val context: Context, private val images: ArrayList<Pair<String,String>>): RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
@@ -237,21 +237,25 @@ class ItemActivity : AppCompatActivity() {
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
             // Image url
-            val imageUrl: String = images[position]
+            val image: Pair<String,String> = images[position]
+
+            // URL and Description
+            val imageUrl: String = image.first
+            val imageDesc: String = image.second
 
             // Get image
             Glide.with(context).load(imageUrl).centerCrop().placeholder(R.drawable.no_image).into(holder.image)
 
-            // On click on image zoom in
+            /**
+             * On click, zoomIn
+             */
             holder.image.setOnClickListener() {
 
-                val item: String = images[position]
-
                 // Load the image
-                Glide.with(ItemActivity.viewZoom).load(item).into(imageViewZoom)
+                Glide.with(ItemActivity.viewZoom).load(imageUrl).into(imageViewZoom)
 
                 // Set description
-                descriptionZoom.text = item
+                descriptionZoom.text = imageDesc
 
                 // Display the modal
                 dialog.show()
