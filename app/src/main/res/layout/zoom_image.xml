@@ -26,14 +26,13 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:layout_height="match_parent"
             android:paddingBottom="5dp">
 
             <TextView
                 android:id="@+id/labelDescription"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
@@ -41,6 +40,17 @@
                 android:textColor="@color/textColorSecondary"
                 android:textSize="18sp"
                 android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/shareBtn"
+                android:layout_width="70dp"
+                android:layout_height="35dp"
+                android:tint="@color/color80sEnd"
+                android:background="@null"
+                android:scaleType="centerCrop"
+                android:onClick="share"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_circle_vol_1circle" />
 
         </LinearLayout>
 

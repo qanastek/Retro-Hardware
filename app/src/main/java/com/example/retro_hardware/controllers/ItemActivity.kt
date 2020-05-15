@@ -4,7 +4,10 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.transition.Transition
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -12,22 +15,25 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ShareCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.SimpleTarget
 import com.example.retro_hardware.R
 import com.example.retro_hardware.models.Item
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import java.io.FileOutputStream
 
 
 class ItemActivity : AppCompatActivity() {
 
     // Current item
     lateinit var item: Item
+
     // List of images: URL | DESC
     lateinit var itemImages: ArrayList<Pair<String,String>>
 
@@ -52,6 +58,9 @@ class ItemActivity : AppCompatActivity() {
 
         // The list of images
         lateinit var images: List<String>
+
+        // Last image clicked
+        lateinit var lastClickedImage: Pair<String,String>
 
         /**
          * Zoom
@@ -90,9 +99,30 @@ class ItemActivity : AppCompatActivity() {
     }
 
     /**
+     * Share button
+     */
+    fun share(view: View) {
+
+        val title = "Look at it's cool hardware \uD83D\uDDA5"
+        val content = "It's a ${brand.text} ${productName.text}.️ \n ${lastClickedImage.second}"
+
+        // Uri of the image
+        val uri = Uri.parse(lastClickedImage.first)
+
+        // Create the intent
+        val shareIntent: Intent? = ShareCompat.IntentBuilder.from(this)
+        .setType("text/plain")
+        .setText(content + " \n \n \uD83D\uDDBC️ Look at this picture: " +  lastClickedImage.first)
+        .setSubject(title)
+        .intent
+
+        startActivity(Intent.createChooser(shareIntent, "Send to"))
+    }
+
+    /**
      * Initialize the zoom modal
      */
-    fun initZoom() {
+    private fun initZoom() {
 
         // Basics
         viewZoom = layoutInflater.inflate(R.layout.zoom_image,null)
@@ -237,11 +267,11 @@ class ItemActivity : AppCompatActivity() {
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
             // Image url
-            val image: Pair<String,String> = images[position]
+            lastClickedImage = images[position]
 
             // URL and Description
-            val imageUrl: String = image.first
-            val imageDesc: String = image.second
+            val imageUrl: String = lastClickedImage.first
+            val imageDesc: String = lastClickedImage.second
 
             // Get image
             Glide.with(context).load(imageUrl).centerCrop().placeholder(R.drawable.no_image).into(holder.image)
