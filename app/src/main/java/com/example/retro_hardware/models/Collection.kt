@@ -104,7 +104,9 @@ class Collection : SQLiteOpenHelper {
      */
     constructor(context: Context) : super(context, DATABASE_NAME, null, DATABASE_VERSION) {
         this.context = context
-        this.loadItems() // Load the database into the array list
+
+        // Load the database into the array list
+        this.loadItems()
     }
 
     /**

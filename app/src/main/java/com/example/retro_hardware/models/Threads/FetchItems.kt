@@ -44,7 +44,7 @@ class FetchItems: AsyncTask<Void, Void, String> {
         // Make a stream to the demo URL
         val inputStreamDemos = URL(urlDemos).openStream()
 
-        // If empty return FAILED
+        // If one of them is empty return FAILED
         inputStreamCollection ?: return FAILED
         inputStreamDemos ?: return FAILED
 
