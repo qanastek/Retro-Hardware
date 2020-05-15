@@ -4,10 +4,9 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.transition.Transition
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -21,12 +20,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.SimpleTarget
 import com.example.retro_hardware.R
 import com.example.retro_hardware.models.Item
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import java.io.FileOutputStream
 
 
 class ItemActivity : AppCompatActivity() {
@@ -86,6 +83,9 @@ class ItemActivity : AppCompatActivity() {
      * Initialize the activity
      */
     private fun initFields() {
+
+        Log.d("initFields",item.demos.toString())
+
         this.chipGroup = findViewById(R.id.chipGroup)
         this.productName = findViewById(R.id.productName)
         this.brand = findViewById(R.id.brand)
@@ -105,9 +105,6 @@ class ItemActivity : AppCompatActivity() {
 
         val title = "Look at it's cool hardware \uD83D\uDDA5"
         val content = "It's a ${brand.text} ${productName.text}.️ \n ${lastClickedImage.second}"
-
-        // Uri of the image
-        val uri = Uri.parse(lastClickedImage.first)
 
         // Create the intent
         val shareIntent: Intent? = ShareCompat.IntentBuilder.from(this)

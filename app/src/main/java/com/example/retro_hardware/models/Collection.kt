@@ -9,6 +9,10 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.net.ConnectivityManager
 import android.util.Log
 import com.example.retro_hardware.models.Threads.FetchItems
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class Collection : SQLiteOpenHelper {
 
@@ -31,7 +35,7 @@ class Collection : SQLiteOpenHelper {
         val TAG: String = this::class.java.canonicalName as String
 
         // Current database version
-        const val DATABASE_VERSION: Int = 2
+        const val DATABASE_VERSION: Int = 3
 
         // Database name
         const val DATABASE_NAME = "retro.hardware"
@@ -64,11 +68,22 @@ class Collection : SQLiteOpenHelper {
         const val TIME_FRAME_ITEM_ID  = "item_id" // Item id
         const val TIME_FRAME_YEAR  = "year"
 
+        const val DEMOS_TABLE  = "demos"
+        const val DEMOS_ITEM_ID  = "item_id" // Item id
+        const val DEMOS_DATE  = "date" // Date of the next demo
+
         /**
-         * Get a collection url
+         * Get the collection url
          */
         fun getUrlCollection(): String {
             return "${Api.BASE_URL}/catalog"
+        }
+
+        /**
+         * Get a collection url
+         */
+        fun getUrlDemos(): String {
+            return "${Api.BASE_URL}/demos"
         }
 
         /**
@@ -105,7 +120,7 @@ class Collection : SQLiteOpenHelper {
         /**
          * Create the collection table
          */
-        var SQL_CREATE_COLLECTION_QUERY: String = "CREATE TABLE ${COLLECTION_TABLE} (" +
+        val SQL_CREATE_COLLECTION_QUERY: String = "CREATE TABLE $COLLECTION_TABLE (" +
                 "$COLLECTION_ID TEXT PRIMARY KEY, " +
                 "$COLLECTION_NAME TEXT NOT NULL, " +
                 "$COLLECTION_BRAND TEXT, " +
@@ -119,7 +134,7 @@ class Collection : SQLiteOpenHelper {
         /**
          * Create the pictures table
          */
-        var SQL_CREATE_PICTURES_QUERY: String = "CREATE TABLE ${PICTURES_TABLE} (" +
+        val SQL_CREATE_PICTURES_QUERY: String = "CREATE TABLE $PICTURES_TABLE (" +
                 "$PICTURES_ID TEXT PRIMARY KEY NOT NULL, " +
                 "$PICTURES_ITEM_ID TEXT NOT NULL, " +
                 "$PICTURES_DESCRIPTION TEXT)"
@@ -129,7 +144,7 @@ class Collection : SQLiteOpenHelper {
         /**
          * Create the categories table
          */
-        var SQL_CREATE_CATEGORIES_QUERY: String = "CREATE TABLE ${CATEGORIES_TABLE} (" +
+        val SQL_CREATE_CATEGORIES_QUERY: String = "CREATE TABLE $CATEGORIES_TABLE (" +
                 "$CATEGORIES_ITEM_ID TEXT NOT NULL, " +
                 "$CATEGORIES_NAME TEXT NOT NULL)"
 
@@ -138,7 +153,7 @@ class Collection : SQLiteOpenHelper {
         /**
          * Create the technical details table
          */
-        var SQL_CREATE_TECHNICAL_DETAILS_QUERY: String = "CREATE TABLE ${TECHNICAL_DETAILS_TABLE} (" +
+        val SQL_CREATE_TECHNICAL_DETAILS_QUERY: String = "CREATE TABLE $TECHNICAL_DETAILS_TABLE (" +
                 "$TECHNICAL_DETAILS_ITEM_ID TEXT NOT NULL, " +
                 "$TECHNICAL_DETAILS_NAME TEXT NOT NULL)"
 
@@ -147,12 +162,24 @@ class Collection : SQLiteOpenHelper {
         /**
          * Create the time frame table
          */
-        var SQL_CREATE_TIME_FRAME_QUERY: String = "CREATE TABLE ${TIME_FRAME_TABLE} (" +
+        val SQL_CREATE_TIME_FRAME_QUERY: String = "CREATE TABLE $TIME_FRAME_TABLE (" +
                 "$TIME_FRAME_ITEM_ID TEXT NOT NULL, " +
                 "$TIME_FRAME_YEAR INTEGER NOT NULL)"
 
         db.execSQL(SQL_CREATE_TIME_FRAME_QUERY)
 
+        /**
+         * Create the demos table
+         */
+        val SQL_CREATE_DEMOS_QUERY: String = "CREATE TABLE $DEMOS_TABLE (" +
+                "$DEMOS_ITEM_ID TEXT NOT NULL, " +
+                "$DEMOS_DATE TEXT NOT NULL, " +
+                "UNIQUE ($DEMOS_ITEM_ID, $DEMOS_DATE) ON CONFLICT ROLLBACK);"
+
+        db.execSQL(SQL_CREATE_DEMOS_QUERY)
+
+        // Fetch the items from the API
+        FetchItems().execute()
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -194,7 +221,7 @@ class Collection : SQLiteOpenHelper {
     /**
      * Return the minimum and maximum date
      */
-    fun getExtremumYears(): Pair<Int,Int> {
+    fun getExtremeYears(): Pair<Int,Int> {
 
         val db = this.readableDatabase
 
@@ -252,7 +279,7 @@ class Collection : SQLiteOpenHelper {
     /**
      * Fills the ContentValues of the item with a Item
      */
-    fun contentValuesItem(item: Item): ContentValues {
+    private fun contentValuesItem(item: Item): ContentValues {
 
         val values = ContentValues()
 
@@ -378,14 +405,19 @@ class Collection : SQLiteOpenHelper {
     }
 
     /**
-     * Add an Items to the list of Items
+     * Insert the demo in the DB
      */
-    fun addItems(items: ArrayList<Item>) {
+    fun addDemo(id: String, date: String) {
 
-        // For each item add it
-        for (item in items) {
-            this.addItem(item)
-        }
+        // Connect to the db
+        val db = this.writableDatabase
+
+        val values = ContentValues()
+        values.put(DEMOS_ITEM_ID,id)
+        values.put(DEMOS_DATE,date)
+
+        // Insertion
+        val status = db.insertWithOnConflict(DEMOS_TABLE, null, values, CONFLICT_IGNORE)
     }
 
     /**
@@ -397,7 +429,7 @@ class Collection : SQLiteOpenHelper {
 
         val cursor = db.query(
             COLLECTION_TABLE, null,
-            null, null, null, null, COLLECTION_YEAR.toString() + " ASC", null
+            null, null, null, null, "${COLLECTION_YEAR.toString()} ASC", null
         )
 
         cursor?.moveToFirst()
@@ -462,12 +494,26 @@ class Collection : SQLiteOpenHelper {
     }
 
     /**
+     * Returns a cursor of all the demos dates of the item
+     */
+    private fun fetchAllDemosDates(itemId: String): Cursor {
+
+        val db = this.readableDatabase
+
+        val cursor = db.rawQuery("SELECT * FROM $DEMOS_TABLE WHERE $DEMOS_ITEM_ID = \'${itemId}\'", null)
+
+        cursor?.moveToFirst()
+
+        return cursor
+    }
+
+    /**
      * Transform a cursor to an item
      */
-    fun cursorToItem(cursor: Cursor): Item {
+    private fun cursorToItem(cursor: Cursor): Item {
 
         /**
-         * Get the item
+         * Get the item from the DB
          */
         var item = Item()
         item.id = cursor.getString(cursor.getColumnIndex(COLLECTION_ID))
@@ -478,7 +524,7 @@ class Collection : SQLiteOpenHelper {
         item.working = cursor.getInt(cursor.getColumnIndex(COLLECTION_WORKING)) == 1 // Like boolean
 
         /**
-         * Get all the items
+         * Get all the items from the DB
          */
         val cursorCategories: Cursor = fetchAllCategories(item.id)
         if (cursorCategories.moveToFirst()) {
@@ -491,7 +537,7 @@ class Collection : SQLiteOpenHelper {
         }
 
         /**
-         * Get all the pictures
+         * Get all the pictures from the DB
          */
         val cursorPictures: Cursor = fetchAllPictures(item.id)
         if (cursorPictures.moveToFirst()) {
@@ -511,7 +557,7 @@ class Collection : SQLiteOpenHelper {
         }
 
         /**
-         * Get all the technical details
+         * Get all the technical details from the DB
          */
         val cursorTechnicalDetails: Cursor = fetchAllTechnicalDetails(item.id)
         if (cursorTechnicalDetails.moveToFirst()) {
@@ -525,7 +571,7 @@ class Collection : SQLiteOpenHelper {
         }
 
         /**
-         * Get all the time frame
+         * Get all the time frame from the DB
          */
         val cursorTimeFrame: Cursor = fetchAllTimeFrame(item.id)
         if (cursorTimeFrame.moveToFirst()) {
@@ -535,6 +581,28 @@ class Collection : SQLiteOpenHelper {
                 item.timeFrame.add(cursorTimeFrame.getShort(cursorTimeFrame.getColumnIndex(TIME_FRAME_YEAR)))
 
                 cursorTimeFrame.moveToNext()
+            }
+        }
+
+        /**
+         * Fetch the demos from the DB
+         */
+        val cursorDemos: Cursor = fetchAllDemosDates(item.id)
+        if (cursorDemos.moveToFirst()) {
+
+            while (!cursorDemos.isAfterLast) {
+
+                // Date as String
+                val dateString: String =  cursorDemos.getString(1)
+
+                // Date as Date
+                val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+                val date: Date = format.parse(dateString)
+
+                // Insert
+                item.demos.add(date)
+
+                cursorDemos.moveToNext()
             }
         }
 
@@ -555,9 +623,13 @@ class Collection : SQLiteOpenHelper {
 
             while (!cursorItems.isAfterLast) {
 
+                // Get the item from the API
                 val item: Item = this.cursorToItem(cursorItems)
+
+                // Add it to the items
                 res.add(item)
 
+                // Move the cursor
                 cursorItems.moveToNext()
             }
         }

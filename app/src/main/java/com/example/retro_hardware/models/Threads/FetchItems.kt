@@ -1,30 +1,28 @@
 package com.example.retro_hardware.models.Threads
 
+import android.content.ContentValues
+import android.database.sqlite.SQLiteDatabase
 import android.os.AsyncTask
 import android.util.Log
 import android.util.JsonReader
-import android.widget.Toast
 import com.example.retro_hardware.controllers.MainActivity
 import com.example.retro_hardware.models.Collection
 import com.example.retro_hardware.models.Item
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 class FetchItems: AsyncTask<Void, Void, String> {
 
-    /**
-     * Array list of items
-     */
-    private val items: ArrayList<Item> = arrayListOf()
-
     constructor()
 
-    // ArrayList of Item
-//    var items: ArrayList<Item> = arrayListOf()
-
     companion object {
+
         val DONE: String = "DONE"
         val FAILED: String = "FAILED"
     }
@@ -35,16 +33,26 @@ class FetchItems: AsyncTask<Void, Void, String> {
     override fun doInBackground(vararg p0: Void?): String {
 
         // URL to get the collection
-        val url: String = Collection.getUrlCollection()
+        val urlCollection: String = Collection.getUrlCollection()
 
-        // Make a stream to the URL
-        val inputStream = URL(url).openStream()
+        // Make a stream to the collection URL
+        val inputStreamCollection = URL(urlCollection).openStream()
+
+        // URL to get the demos
+        val urlDemos: String = Collection.getUrlDemos()
+
+        // Make a stream to the demo URL
+        val inputStreamDemos = URL(urlDemos).openStream()
 
         // If empty return FAILED
-        inputStream ?: return FAILED
+        inputStreamCollection ?: return FAILED
+        inputStreamDemos ?: return FAILED
 
-        // Parse the JSON
-        this.readJsonStream(inputStream)
+        // Parse the JSON of collections
+        this.readJsonStream(inputStreamCollection)
+
+        // Read the JSON stream of demos
+        this.readJsonStreamDemos(inputStreamDemos)
 
         return DONE
     }
@@ -55,17 +63,13 @@ class FetchItems: AsyncTask<Void, Void, String> {
     override fun onPostExecute(result: String?) {
         super.onPostExecute(result)
 
-        // Add all the items
-        MainActivity.collection.addItems(items)
+        // Load the items from the DB
         MainActivity.collection.loadItems()
-
-        // Log.d("--------- size: ", items.size.toString())
-        // Log.d("--------- size: ", MainActivity.collection.getItems().size.toString())
 
         MainActivity.adapter?.notifyDataSetChanged()
 
         // Toast
-//        val toast = Toast.makeText(MainActivity.context, "Finish the download !", Toast.LENGTH_SHORT)
+//        val toast = Toast.makeText(MainActivity.context, "Download finished !", Toast.LENGTH_SHORT)
 //        toast.show()
     }
 
@@ -82,6 +86,41 @@ class FetchItems: AsyncTask<Void, Void, String> {
             readItems(reader)
         } finally {
             reader.close()
+        }
+    }
+
+    /**
+     * Parse the JSON stream of demos
+     */
+    private fun readJsonStreamDemos(response: InputStream) {
+
+        Log.d("FetchDemos","FetchDemos")
+
+        val readerDemos = JsonReader(InputStreamReader(response, "UTF-8"))
+
+        try {
+
+            // Start the object
+            readerDemos.beginObject()
+
+            // For each items
+            while (readerDemos.hasNext()) {
+
+                // Identifier of the item
+                var id = readerDemos.nextName()
+                var date = readerDemos.nextString()
+
+                // Write in the DB
+                MainActivity.collection.addDemo(id,date)
+            }
+
+            readerDemos.endObject()
+
+        } catch (e: Exception) {
+            error(e)
+        }
+        finally {
+            readerDemos.close()
         }
     }
 
@@ -111,8 +150,8 @@ class FetchItems: AsyncTask<Void, Void, String> {
 
             readObjectItems(reader, item)
 
-            // Add it to the collection
-            this.items.add(item)
+            // Write in the DB
+            MainActivity.collection.addItem(item)
         }
 
         reader.endObject()

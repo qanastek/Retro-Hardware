@@ -8,6 +8,9 @@ import androidx.core.content.ContextCompat
 import com.example.retro_hardware.R
 import com.example.retro_hardware.controllers.MainActivity
 import kotlinx.android.parcel.Parcelize
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 @Parcelize
 class Item(
@@ -20,7 +23,8 @@ class Item(
     var pictures: HashMap<String,String>,
     var technicalDetails: ArrayList<String>,
     var categories: ArrayList<String>,
-    var timeFrame: ArrayList<Short>
+    var timeFrame: ArrayList<Short>,
+    var demos: ArrayList<Date>
 ): Parcelable {
 
     /**
@@ -36,7 +40,8 @@ class Item(
         pictures = hashMapOf<String,String>(),
         technicalDetails = arrayListOf<String>(),
         categories = arrayListOf<String>(),
-        timeFrame = arrayListOf<Short>()
+        timeFrame = arrayListOf<Short>(),
+        demos = arrayListOf<Date>()
     )
 
     /**

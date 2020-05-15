@@ -161,7 +161,7 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
         categories.removeAllViews()
         brands.removeAllViews()
 
-        var extreme: Pair<Int,Int>  = collection.getExtremumYears()
+        var extreme: Pair<Int,Int>  = collection.getExtremeYears()
         yearStart.setText(extreme.first.toString(), TextView.BufferType.EDITABLE)
         yearEnd.setText(extreme.second.toString(), TextView.BufferType.EDITABLE)
 
@@ -228,7 +228,7 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
         alphabetical.isChecked = true
         both.isChecked = true
 
-        var extreme: Pair<Int,Int>  = collection.getExtremumYears()
+        var extreme: Pair<Int,Int>  = collection.getExtremeYears()
         yearStart.setText(extreme.first.toString(), TextView.BufferType.EDITABLE)
         yearEnd.setText(extreme.second.toString(), TextView.BufferType.EDITABLE)
 
