@@ -304,7 +304,7 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
 
         // Update the vue
         adapter?.filter?.filter(searching.query)
-        
+
         dialog.dismiss()
     }
 

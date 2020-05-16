@@ -124,7 +124,7 @@ public class UsersAdapter(context: Context): BaseAdapter(), Filterable {
                     if (MainActivity.yearStart.text.toString().isNotBlank()) {
 
                         var yearStartCompare: String = MainActivity.yearStart.text.toString()
-                        filteredList = filteredList.filter { it.year >=  yearStartCompare.toShort()} as ArrayList<Item>
+                        filteredList = filteredList.filter { it.year.toInt() == 0 || it.year >=  yearStartCompare.toShort()} as ArrayList<Item>
                     }
 
                     /**
@@ -134,7 +134,7 @@ public class UsersAdapter(context: Context): BaseAdapter(), Filterable {
                     if (MainActivity.yearEnd.text.toString().isNotBlank()) {
 
                         var yearEndCompare: String = MainActivity.yearEnd.text.toString()
-                        filteredList = filteredList.filter { it.year <=  yearEndCompare.toShort()} as ArrayList<Item>
+                        filteredList = filteredList.filter { it.year.toInt() == 0 || it.year <=  yearEndCompare.toShort()} as ArrayList<Item>
                     }
 
                     /**
