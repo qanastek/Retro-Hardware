@@ -1,12 +1,9 @@
 package com.example.retro_hardware.models
 
 import android.content.Context
-import android.os.Parcel
 import android.os.Parcelable
-import android.util.Log
 import androidx.core.content.ContextCompat
 import com.example.retro_hardware.R
-import com.example.retro_hardware.controllers.MainActivity
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 import kotlin.collections.ArrayList
@@ -25,7 +22,7 @@ class Item(
     var categories: ArrayList<String>,
     var timeFrame: ArrayList<Short>,
     var demos: ArrayList<Date>
-): Parcelable {
+): Parcelable, IPrintable {
 
     /**
      * Empty Constructor

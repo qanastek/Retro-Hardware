@@ -28,7 +28,9 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
     lateinit var rootLayout: LinearLayout
     lateinit var scrollFilter: ScrollView
 
+    // The listView
     lateinit var listView: ListView
+
     lateinit var searching: SearchView
 
     companion object {

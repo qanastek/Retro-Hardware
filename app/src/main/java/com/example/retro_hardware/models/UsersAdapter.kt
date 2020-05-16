@@ -91,6 +91,19 @@ public class UsersAdapter(context: Context): BaseAdapter(), Filterable {
                     val statusRes = MainActivity.dialog.findViewById<RadioButton>(MainActivity.status.checkedRadioButtonId)
 
                     /**
+                     * Status
+                     */
+                    when(statusRes.text.toString()) {
+
+                        "WORKING" -> {
+                            filteredList = filteredList.filter { it.working?.equals(true) } as ArrayList<Item>
+                        }
+                        "BROKEN" -> {
+                            filteredList = filteredList.filter { it.working?.equals(false) } as ArrayList<Item>
+                        }
+                    }
+
+                    /**
                      * SortBy
                      */
                     when(sortRes.text.toString()) {

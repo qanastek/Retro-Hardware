@@ -223,11 +223,11 @@
                     android:button="@android:color/transparent"
                     android:checked="false"
                     android:gravity="center"
-                    android:text="working"
+                    android:text="WORKING"
                     android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textOff="working"
-                    android:textOn="working" />
+                    android:textOff="WORKING"
+                    android:textOn="WORKING" />
 
                 <RadioButton
                     android:id="@+id/both"
@@ -238,11 +238,11 @@
                     android:button="@android:color/transparent"
                     android:checked="true"
                     android:gravity="center"
-                    android:text="both"
+                    android:text="BOTH"
                     android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textOff="both"
-                    android:textOn="both" />
+                    android:textOff="BOTH"
+                    android:textOn="BOTH" />
 
                 <RadioButton
                     android:id="@+id/broken"
@@ -253,11 +253,11 @@
                     android:button="@android:color/transparent"
                     android:checked="false"
                     android:gravity="center"
-                    android:text="broken"
+                    android:text="BROKEN"
                     android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textOff="broken"
-                    android:textOn="broken" />
+                    android:textOff="BROKEN"
+                    android:textOn="BROKEN" />
 
             </RadioGroup>
 
