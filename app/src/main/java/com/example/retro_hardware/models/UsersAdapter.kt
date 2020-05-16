@@ -85,11 +85,6 @@ public class UsersAdapter(context: Context): BaseAdapter(), Filterable {
                     val orderByRes = MainActivity.dialog.findViewById<RadioButton>(MainActivity.orderBy.checkedRadioButtonId)
                     val statusRes = MainActivity.dialog.findViewById<RadioButton>(MainActivity.status.checkedRadioButtonId)
 
-                    // Debug
-                    Log.d("apply", "----------------")
-
-                    Log.d("apply",orderByRes.text.toString())
-
                     /**
                      * SortBy
                      */
@@ -123,43 +118,41 @@ public class UsersAdapter(context: Context): BaseAdapter(), Filterable {
                         }
                     }
 
-                    Log.d("apply",statusRes.text.toString())
-
                     // If empty take min/max dates
-
                     // Starting year
                     Log.d("apply",MainActivity.yearStart.text.toString())
                     if (MainActivity.yearStart.text.toString().isNotBlank()) {
 
                         var yearStartCompare: String = MainActivity.yearStart.text.toString()
-                        filteredList.filter { it.year >=  yearStartCompare.toShort()}
+                        filteredList = filteredList.filter { it.year >=  yearStartCompare.toShort()} as ArrayList<Item>
                     }
 
-                    // Ending year
+                    /**
+                     * Ending year
+                     */
                     Log.d("apply",MainActivity.yearEnd.text.toString())
                     if (MainActivity.yearEnd.text.toString().isNotBlank()) {
 
                         var yearEndCompare: String = MainActivity.yearEnd.text.toString()
-                        filteredList.filter { it.year <=  yearEndCompare.toShort()}
+                        filteredList = filteredList.filter { it.year <=  yearEndCompare.toShort()} as ArrayList<Item>
                     }
 
-                    // If empty take all brands
+                    /**
+                     * If empty take all brands
+                     */
                     var selectedBrands: ArrayList<String> = MainActivity.getAllTheSelectedBrands()
-                    Log.d("apply", selectedBrands.toString())
                     if (selectedBrands.size > 0) {
 
                         filteredList = filteredList
                         .filter { it -> selectedBrands
                         .map { ma -> ma.toUpperCase() }
                         .contains(it.brand.toUpperCase()) } as ArrayList<Item>
-
-                        Log.d("apply1.1", MainActivity.collection.items.toString())
                     }
-                    Log.d("apply1.2", MainActivity.collection.items.toString())
 
-                    // If empty take all categories
+                    /**
+                     * If empty take all categories
+                     */
                     var selectedCategories: ArrayList<String> = MainActivity.getAllTheSelectedCategories()
-                    Log.d("apply", selectedCategories.toString())
                     if (selectedCategories.size > 0) {
 
                         filteredList = filteredList
@@ -167,15 +160,11 @@ public class UsersAdapter(context: Context): BaseAdapter(), Filterable {
                         .map { ma -> ma.toUpperCase() }
                         .containsAll(it.categories
                         .map { mp -> mp.toUpperCase() }) } as ArrayList<Item>
-
-                        Log.d("apply2.1", MainActivity.collection.items.toString())
                     }
 
-                    Log.d("apply2.2", MainActivity.collection.items.toString())
-
-                    Log.d("apply", "----------------")
-
-                    // If not empty
+                    /**
+                     * Sort according to the searchBar input
+                     */
                     if (constraint != null) {
 
                         // The typed text

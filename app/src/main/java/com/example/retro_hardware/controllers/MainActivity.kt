@@ -302,6 +302,9 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
         yearStart.setText(extreme.first.toString(), TextView.BufferType.EDITABLE)
         yearEnd.setText(extreme.second.toString(), TextView.BufferType.EDITABLE)
 
+        // Update the vue
+        adapter?.filter?.filter(searching.query)
+        
         dialog.dismiss()
     }
 
@@ -319,7 +322,6 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
     fun apply(view: View) {
 
         // Update the vue
-//        adapter?.notifyDataSetChanged()
         adapter?.filter?.filter(searching.query)
 
         dialog.dismiss()
