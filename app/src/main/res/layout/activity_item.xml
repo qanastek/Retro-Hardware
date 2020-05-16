@@ -67,6 +67,7 @@
                         android:text="MACHINTOCH PLUS"
                         android:textColor="@color/textColorPrimary"
                         android:textSize="30sp"
+                        android:onClick="copy"
                         android:textStyle="bold" />
 
                 </LinearLayout>

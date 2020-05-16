@@ -1,6 +1,9 @@
 package com.example.retro_hardware.controllers
 
 import android.app.Dialog
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
@@ -10,6 +13,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ShareCompat
 import androidx.core.content.ContextCompat
@@ -102,6 +106,22 @@ class ItemActivity : AppCompatActivity() {
         this.imagesLinearLayout = findViewById(R.id.imagesLinearLayout)
         this.calendarLayout = findViewById(R.id.calendarLayout)
         this.calendarView = findViewById(R.id.calendarView)
+    }
+
+    /**
+     * OnClick copy on clipboard
+     */
+    fun copy(view: View) {
+
+        // Check if it's a text
+        if (view is TextView) {
+
+            var clipBoard : ClipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            var data = ClipData.newPlainText("EditText",view.text)
+            clipBoard.setPrimaryClip(data)
+
+            Toast.makeText(this, "Copied!", Toast.LENGTH_SHORT).show()
+        }
     }
 
     /**

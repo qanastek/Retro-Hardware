@@ -23,6 +23,7 @@ class FetchItems: AsyncTask<Void, Void, String> {
 
     companion object {
 
+        // Status
         val DONE: String = "DONE"
         val FAILED: String = "FAILED"
     }
