@@ -42,12 +42,8 @@ public class UsersAdapter(context: Context): BaseAdapter(), Filterable {
             var orderByResBtn = MainActivity.dialog.findViewById<RadioButton>(MainActivity.orderBy.checkedRadioButtonId)
             var orderByRes = orderByResBtn.text.toString().toUpperCase()
 
-            Log.d("DEFAULT VALUE",orderByRes)
-
             // If order by is enabled
             if (orderByRes != "DEFAULT") {
-
-                Log.d("DEFAULT","DEFAULT")
 
                 // If it's an header
                 if (adjacencyListPrintable[position] is Header ) {
@@ -357,14 +353,15 @@ public class UsersAdapter(context: Context): BaseAdapter(), Filterable {
                     // If order by is enabled
                     if (orderByRes != "DEFAULT") {
 
-                        Log.d("DEFAULT ------------ ", makeAdjacencyList(currentList).size.toString())
+                        // Make the adjacency list as an array
+                        adjacencyListPrintable = makeAdjacencyList(filteredList)
 
-                        adjacencyListPrintable = makeAdjacencyList(currentList)
+                        // Set it as result
                         res.values = adjacencyListPrintable
 
                     } else {
 
-                        // Normal
+                        // Normal filtered result
                         res.values = filteredList
                     }
 

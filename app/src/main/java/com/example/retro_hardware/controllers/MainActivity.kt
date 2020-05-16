@@ -139,7 +139,7 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
         // Initialize the filters modal
         initializeFilters()
 
-        // Create the adapter
+        // Create and set the adapter
         adapter = UsersAdapter(this)
         listView.adapter = adapter
 
