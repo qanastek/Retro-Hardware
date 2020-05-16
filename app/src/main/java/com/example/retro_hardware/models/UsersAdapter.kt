@@ -25,16 +25,55 @@ public class UsersAdapter(context: Context): BaseAdapter(), Filterable {
         /**
          * The current list
          */
-        var currentList = ArrayList(originalList)
+        var currentList: ArrayList<Item> = ArrayList(originalList)
+
+        /**
+         * Adjacency list
+         */
+        lateinit var adjacencyListPrintable: ArrayList<IPrintable>
 
         override fun getView(position: Int, convertView: View?, viewGroup: ViewGroup?): View {
 
             val inflater = LayoutInflater.from(this.context)
 
+            val item: Item
+
+            // Order by value
+            var orderByResBtn = MainActivity.dialog.findViewById<RadioButton>(MainActivity.orderBy.checkedRadioButtonId)
+            var orderByRes = orderByResBtn.text.toString().toUpperCase()
+
+            Log.d("DEFAULT VALUE",orderByRes)
+
+            // If order by is enabled
+            if (orderByRes != "DEFAULT") {
+
+                Log.d("DEFAULT","DEFAULT")
+
+                // If it's an header
+                if (adjacencyListPrintable[position] is Header ) {
+
+                    // Header
+                    val headerRow = inflater.inflate(R.layout.section_header, viewGroup, false)
+
+                    // Category
+                    val headerName = headerRow.findViewById<TextView>(R.id.headerName)
+                    headerName.text = (adjacencyListPrintable[position] as Header).category
+
+                    return headerRow
+
+                } else {
+
+                    // Else get the item
+                    item = adjacencyListPrintable[position] as Item
+                }
+
+            } else {
+
+                item = currentList[position]
+            }
+
             // Row
             val row = inflater.inflate(R.layout.item_row, viewGroup, false)
-
-            val item: Item = currentList[position]
 
             // Thumbnail
             val thumb = row.findViewById<ImageView>(R.id.image)
@@ -60,7 +99,106 @@ public class UsersAdapter(context: Context): BaseAdapter(), Filterable {
             return row
         }
 
+        /**
+         * Make a adjency list
+         */
+        private fun makeAdjacencyList(currentList: ArrayList<Item>): ArrayList<IPrintable> {
+
+            // The adjacency list
+            var adjacency: HashMap<String, ArrayList<Item>> = HashMap()
+
+            // The result
+            var res: ArrayList<IPrintable> = ArrayList()
+
+            // Order by value
+            var orderByResBtn = MainActivity.dialog.findViewById<RadioButton>(MainActivity.orderBy.checkedRadioButtonId)
+            var orderByRes = orderByResBtn.text.toString().toUpperCase()
+
+            // Other category/time frame
+            val OTHERS = "OTHERS"
+
+            if (orderByRes == "CATEGORIES") {
+
+                // Sort by category asc
+                currentList.sortBy { it.categories[0] }
+
+                // Create all categories and add the item to them
+                currentList.forEach {
+
+                    var category = it.categories[0]
+
+                    // Add the "Others" section
+                    if (category.isNullOrEmpty() && !adjacency.containsKey(OTHERS)) {
+                        adjacency[OTHERS] = ArrayList()
+                    }
+
+                    // If exist
+                    if (category.isNullOrEmpty()) {
+                        adjacency[OTHERS]?.add(it)
+                    }
+                    else if (adjacency.containsKey(category)) {
+                        adjacency[category]?.add(it)
+                    } else {
+                        adjacency[category] = ArrayList()
+                        adjacency[category]?.add(it)
+                    }
+                }
+            }
+            else if(orderByRes == "CHRONOLOGY") {
+
+                // Sort by time frame asc
+                currentList.sortBy { it.timeFrame[0] }
+
+                // Create all time frames and add the item to them
+                currentList.forEach {
+
+                    var timeFrameKey = it.timeFrame[0].toString()
+
+                    // Add the "Others" section
+                    if (timeFrameKey.isNullOrEmpty() && !adjacency.containsKey(OTHERS)) {
+                        adjacency[OTHERS] = ArrayList()
+                    }
+
+                    // If exist
+                    if (timeFrameKey.isNullOrEmpty()) {
+                        adjacency[OTHERS]?.add(it)
+                    }
+                    if (adjacency.containsKey(timeFrameKey)) {
+                        adjacency[timeFrameKey]?.add(it)
+                    } else {
+                        adjacency[timeFrameKey] = ArrayList()
+                        adjacency[timeFrameKey]?.add(it)
+                    }
+                }
+            }
+
+            // For each categories or time frame make the header and add the items
+            adjacency.keys.forEach { key ->
+
+                // Add the header
+                res.add(Header(key))
+
+                // Add the elements
+                adjacency[key]?.forEach {  item ->
+                    res.add(item)
+                }
+            }
+
+            return res
+        }
+
         override fun getItem(position: Int): Item {
+
+            // Order by value
+            var orderByResBtn = MainActivity.dialog.findViewById<RadioButton>(MainActivity.orderBy.checkedRadioButtonId)
+            var orderByRes = orderByResBtn.text.toString().toUpperCase()
+
+            // If order by is enabled
+            if (orderByRes != "DEFAULT") {
+                return adjacencyListPrintable[position] as Item
+            }
+
+            // Else
             return currentList[position]
         }
 
@@ -68,7 +206,19 @@ public class UsersAdapter(context: Context): BaseAdapter(), Filterable {
             return position.toLong()
         }
 
+        // Get the number of elements
         override fun getCount(): Int {
+
+            // Order by value
+            var orderByResBtn = MainActivity.dialog.findViewById<RadioButton>(MainActivity.orderBy.checkedRadioButtonId)
+            var orderByRes = orderByResBtn.text.toString().toUpperCase()
+
+            // If order by is enabled
+            if (orderByRes != "DEFAULT") {
+                return adjacencyListPrintable.size
+            }
+
+            // Else
             return currentList.size
         }
 
@@ -87,7 +237,6 @@ public class UsersAdapter(context: Context): BaseAdapter(), Filterable {
                     var orderText: String =  if(MainActivity.order.isChecked) MainActivity.order.textOn.toString() else MainActivity.order.textOff.toString()
 
                     val sortRes = MainActivity.dialog.findViewById<RadioButton>(MainActivity.sortBy.checkedRadioButtonId)
-                    val orderByRes = MainActivity.dialog.findViewById<RadioButton>(MainActivity.orderBy.checkedRadioButtonId)
                     val statusRes = MainActivity.dialog.findViewById<RadioButton>(MainActivity.status.checkedRadioButtonId)
 
                     /**
@@ -200,7 +349,24 @@ public class UsersAdapter(context: Context): BaseAdapter(), Filterable {
 
                     // Convert to filterResults
                     var res: FilterResults = FilterResults()
-                    res.values = filteredList
+
+                    // Order by value
+                    var orderByResBtn = MainActivity.dialog.findViewById<RadioButton>(MainActivity.orderBy.checkedRadioButtonId)
+                    var orderByRes = orderByResBtn.text.toString().toUpperCase()
+
+                    // If order by is enabled
+                    if (orderByRes != "DEFAULT") {
+
+                        Log.d("DEFAULT ------------ ", makeAdjacencyList(currentList).size.toString())
+
+                        adjacencyListPrintable = makeAdjacencyList(currentList)
+                        res.values = adjacencyListPrintable
+
+                    } else {
+
+                        // Normal
+                        res.values = filteredList
+                    }
 
                     // Return it
                     return res
@@ -210,8 +376,17 @@ public class UsersAdapter(context: Context): BaseAdapter(), Filterable {
 
                     if (results != null) {
 
-                        currentList.clear()
-                        currentList.addAll(results.values as kotlin.collections.Collection<Item>)
+                        // Order by value
+                        var orderByResBtn = MainActivity.dialog.findViewById<RadioButton>(MainActivity.orderBy.checkedRadioButtonId)
+                        var orderByRes = orderByResBtn.text.toString().toUpperCase()
+
+                        // If order by is disabled
+                        if (orderByRes == "DEFAULT") {
+
+                            currentList.clear()
+                            currentList.addAll(results.values as kotlin.collections.Collection<Item>)
+                        }
+
                         notifyDataSetChanged()
                     }
                 }

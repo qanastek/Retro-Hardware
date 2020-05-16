@@ -68,11 +68,11 @@
                     android:button="@android:color/transparent"
                     android:checked="false"
                     android:gravity="center"
-                    android:text="categories"
+                    android:text="CATEGORIES"
                     android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textOff="categories"
-                    android:textOn="categories" />
+                    android:textOff="CATEGORIES"
+                    android:textOn="CATEGORIES" />
 
                 <RadioButton
                     android:id="@+id/defaultOrder"
@@ -83,11 +83,11 @@
                     android:button="@android:color/transparent"
                     android:checked="true"
                     android:gravity="center"
-                    android:text="default"
+                    android:text="DEFAULT"
                     android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textOff="default"
-                    android:textOn="default" />
+                    android:textOff="DEFAULT"
+                    android:textOn="DEFAULT" />
 
                 <RadioButton
                     android:id="@+id/yearOrder"
@@ -98,11 +98,11 @@
                     android:button="@android:color/transparent"
                     android:checked="false"
                     android:gravity="center"
-                    android:text="chronology"
+                    android:text="CHRONOLOGY"
                     android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textOff="chronology"
-                    android:textOn="chronology" />
+                    android:textOff="CHRONOLOGY"
+                    android:textOn="CHRONOLOGY" />
 
             </RadioGroup>
 

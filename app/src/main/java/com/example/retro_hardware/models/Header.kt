@@ -1,4 +1,4 @@
 package com.example.retro_hardware.models
 
-class Header(category: String): IPrintable {
+class Header(var category: String): IPrintable {
 }

@@ -130,7 +130,14 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
         listView = findViewById(R.id.UsersListView)
         searching = findViewById(R.id.searching)
 
+        // Listen to the searchBar
         listenSearch()
+
+        // Link the fields of the filters modal
+        linkFiltersView()
+
+        // Initialize the filters modal
+        initializeFilters()
 
         // Create the adapter
         adapter = UsersAdapter(this)
@@ -139,6 +146,7 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
         // Update the adapter
         adapter?.notifyDataSetChanged()
 
+        // On click on item
         listView.setOnItemClickListener { parent, view, position, id ->
 
             val item: Item? = adapter?.getItem(position) // The item that was clicked
@@ -146,12 +154,6 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
             intent.putExtra("item", item)
             startActivity(intent)
         }
-
-        // Link the fields of the filters modal
-        linkFiltersView()
-
-        // Initialize the filters modal
-        initializeFilters()
     }
 
     /**
@@ -180,6 +182,9 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
      */
     private fun linkFiltersView() {
 
+        /**
+         * Filters modal
+         */
         layInflat = LayoutInflater.from(applicationContext)
         viewFilter = layoutInflater.inflate(R.layout.filters,null)
         dialog = Dialog(this, android.R.style.Theme_NoTitleBar_Fullscreen)
