@@ -69,8 +69,10 @@
                         android:id="@+id/name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:autoText="true"
                         android:gravity="center_vertical"
                         android:text="Macbook Pro"
+                        android:textAlignment="viewStart"
                         android:textColor="@android:color/white"
                         android:textColorHighlight="@color/colorAccent"
                         android:textColorLink="@color/colorAccent"
@@ -79,11 +81,13 @@
 
                     <TextView
                         android:id="@+id/brand"
-                        android:text="Apple"
-                        android:paddingTop="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:autoText="true"
                         android:gravity="center_vertical"
+                        android:paddingTop="5dp"
+                        android:text="Apple"
+                        android:textAlignment="textStart"
                         android:textAllCaps="true"
                         android:textColor="@android:color/white"
                         android:textSize="20sp" />

@@ -173,6 +173,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
+
                 </LinearLayout>
 
                 // Label desc
@@ -217,7 +218,6 @@
 
                 </LinearLayout>
 
-                // Year
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -252,6 +252,33 @@
                             tools:text="1986" />
 
                     </LinearLayout>
+
+                </LinearLayout>
+
+                // TIME FRAMES
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:paddingBottom="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:text="TIME FRAMES"
+                        android:textColor="@color/textColorSecondary"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/timeFrame"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="10dp"/>
 
                 </LinearLayout>
 
@@ -320,8 +347,9 @@
 
                 </LinearLayout>
 
-                // Next demos
+                // Calendar
                 <LinearLayout
+                    android:id="@+id/calendarLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -330,31 +358,20 @@
                     android:paddingBottom="10dp">
 
                     <TextView
-                        android:id="@+id/labelDemos"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:paddingBottom="5dp"
                         android:text="NEXT PRESENTATIONS"
                         android:textColor="@color/textColorSecondary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
-                </LinearLayout>
-
-                // Calendar
-
-                <LinearLayout
-                    android:id="@+id/calendarLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:paddingBottom="7dp">
-
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/calendarView"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
 
                 </LinearLayout>
 

@@ -37,6 +37,7 @@ class ItemActivity : AppCompatActivity() {
      * Fields
      */
     lateinit var chipGroup: ChipGroup
+    lateinit var timeFrame: ChipGroup
     lateinit var productName: TextView
     lateinit var brand: TextView
     lateinit var year: TextView
@@ -89,6 +90,7 @@ class ItemActivity : AppCompatActivity() {
         Log.d("initFields",item.demos.toString())
 
         this.chipGroup = findViewById(R.id.chipGroup)
+        this.timeFrame = findViewById(R.id.timeFrame)
         this.productName = findViewById(R.id.productName)
         this.brand = findViewById(R.id.brand)
         this.year = findViewById(R.id.year)
@@ -192,6 +194,34 @@ class ItemActivity : AppCompatActivity() {
         }
 
         /**
+         * Check if have timeFrame
+         */
+        if (this.item.timeFrame.size > 0) {
+
+            // If yes, add them
+            for (timeFrameItem in this.item.timeFrame) {
+
+                val chip = Chip(timeFrame.context)
+                chip.text= timeFrameItem.toString()
+
+                chip.chipBackgroundColor = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipColor))
+                chip.isClickable = false
+                chip.isCheckable = false
+                timeFrame.addView(chip)
+
+            }
+
+        } else {
+
+            val chip = Chip(timeFrame.context)
+            chip.text = "EMPTY"
+            chip.chipBackgroundColor = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.chipColor))
+            chip.isClickable = false
+            chip.isCheckable = false
+            timeFrame.addView(chip)
+        }
+
+        /**
          * Check if have technicalDetails
          */
         if (this.item.technicalDetails.size > 0) {
@@ -265,15 +295,15 @@ class ItemActivity : AppCompatActivity() {
         } else {
 
             // Create a textView
-            val noImages = TextView(this)
+            val noDate = TextView(this)
 
             // Configure it
-            noImages.text = "No dates available"
-            noImages.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18F)
-            noImages.setTextColor(ContextCompat.getColor(this,R.color.textColorTertiary))
+            noDate.text = "No dates available"
+            noDate.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18F)
+            noDate.setTextColor(ContextCompat.getColor(this,R.color.textColorTertiary))
 
             // Add it
-            calendarLayout.addView(noImages)
+            calendarLayout.addView(noDate)
         }
 
     }

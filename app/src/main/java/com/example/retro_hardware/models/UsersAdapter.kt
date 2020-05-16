@@ -50,7 +50,12 @@ public class UsersAdapter(context: Context): BaseAdapter(), Filterable {
 
             // Age
             val brandText = row.findViewById<TextView>(R.id.brand)
-            brandText.text = item.brand
+
+            if (brandText == null) {
+                brandText?.visibility = View.INVISIBLE
+            } else {
+                brandText?.text = item.brand
+            }
 
             return row
         }
