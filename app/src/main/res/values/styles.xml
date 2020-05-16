@@ -34,4 +34,26 @@
         <item name="android:textColor">@color/white</item>
         <item name="chipBackgroundColor">@color/chip_selector</item>
     </style>
+
+    <style name="FullscreenTheme" parent="AppTheme">
+        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
+        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
+    </style>
+
+    <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
+    </style>
+
+    <!-- Base application theme. -->
+    <style name="SplashScreen" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/splashScreen</item>
+        <item name="colorPrimaryDark">@color/splashScreen</item>
+        <item name="colorAccent">@color/splashScreen</item>
+        <item name="android:colorBackground">@color/splashScreen</item>
+    </style>
+
 </resources>
