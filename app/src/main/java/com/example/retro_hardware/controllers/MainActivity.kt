@@ -1,21 +1,19 @@
 package com.example.retro_hardware.controllers
 
 import android.app.Dialog
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.bumptech.glide.Glide
 import com.example.retro_hardware.R
 import com.example.retro_hardware.models.Collection
 import com.example.retro_hardware.models.Item
+import com.example.retro_hardware.models.UsersAdapter
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 
@@ -25,7 +23,6 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
     /**
      * Main screen
      */
-    lateinit var dialog: Dialog
     lateinit var layInflat: LayoutInflater
     lateinit var viewFilter: View
     lateinit var rootLayout: LinearLayout
@@ -33,21 +30,6 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
 
     lateinit var listView: ListView
     lateinit var searching: SearchView
-
-    /**
-     * Filtering window
-     */
-    lateinit var yearStart: EditText
-    lateinit var yearEnd: EditText
-    lateinit var order: ToggleButton
-    lateinit var sortBy: RadioGroup
-    lateinit var orderBy: RadioGroup
-    lateinit var status: RadioGroup
-    lateinit var categories: ChipGroup
-    lateinit var brands: ChipGroup
-    lateinit var defaultOrder: RadioButton
-    lateinit var alphabetical: RadioButton
-    lateinit var both: RadioButton
 
     companion object {
 
@@ -60,6 +42,74 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
          * Adapter
          */
         var adapter: UsersAdapter? = null
+
+        /**
+         * Filters dialog
+         */
+        lateinit var dialog: Dialog
+
+        /**
+         * Filtering window
+         */
+        lateinit var yearStart: EditText
+        lateinit var yearEnd: EditText
+        lateinit var order: ToggleButton
+        lateinit var sortBy: RadioGroup
+        lateinit var orderBy: RadioGroup
+        lateinit var status: RadioGroup
+        lateinit var categories: ChipGroup
+        lateinit var brands: ChipGroup
+        lateinit var defaultOrder: RadioButton
+        lateinit var alphabetical: RadioButton
+        lateinit var both: RadioButton
+
+        /**
+         * Return all the selected categories in the filters modal
+         */
+        fun getAllTheSelectedCategories(): ArrayList<String> {
+
+            var res: ArrayList<String> = ArrayList()
+
+            // Get all the selected brands
+            for (i in 0 until categories.childCount) {
+
+                // Get the current chi^p
+                var currentChip: Chip = categories.getChildAt(i) as Chip
+
+                // If is selected
+                if (currentChip.isChecked){
+
+                    // Get it
+                    res.add(currentChip.text.toString())
+                }
+            }
+
+            return res
+        }
+
+        /**
+         * Return all the selected brands in the filters modal
+         */
+        fun getAllTheSelectedBrands(): ArrayList<String> {
+
+            var res: ArrayList<String> = ArrayList()
+
+            // Get all the selected brands
+            for (i in 0 until brands.childCount) {
+
+                // Get the current chi^p
+                var currentChip: Chip = brands.getChildAt(i) as Chip
+
+                // If is selected
+                if (currentChip.isChecked){
+
+                    // Get it
+                    res.add(currentChip.text.toString())
+                }
+            }
+
+            return res
+        }
     }
 
     constructor() {
@@ -150,6 +200,16 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
         defaultOrder = viewFilter.findViewById(R.id.defaultOrder)
         alphabetical = viewFilter.findViewById(R.id.alphabetical)
         both = viewFilter.findViewById(R.id.both)
+
+        // Get the close button on the searchView
+        val closeButtonId: Int = searching.context.resources.getIdentifier("android:id/search_close_btn", null, null)
+        val closeButton = searching.findViewById(closeButtonId) as ImageView
+
+        // On close collapse the searchView
+        closeButton.setOnClickListener {
+            searching.onActionViewCollapsed()
+            true
+        }
     }
 
     /**
@@ -193,12 +253,24 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
     }
 
     /**
+     * On click expand the searchBar
+     */
+    fun expandSearchBar(view: View) {
+        searching.onActionViewExpanded()
+    }
+
+    /**
      * When the user trigger the filtering button
      */
     fun filters(view: View) {
 
         // Unfocus the elements
         clearFocuses()
+
+        // Go to the top of the scroll view
+        scrollFilter.scrollTo(0,0)
+
+        // Display the dialog
         dialog.show()
     }
 
@@ -218,8 +290,6 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
         status.clearCheck()
         categories.clearCheck()
         brands.clearCheck()
-        // Go to the top of the scroll view
-        scrollFilter.scrollTo(0,0)
 
         /**
          * Set default
@@ -248,197 +318,14 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
      */
     fun apply(view: View) {
 
-        /**
-         * Fetch the results
-         */
-        var orderText: String =  if(order.isChecked) order.textOn.toString() else order.textOff.toString()
-
-        val sortRes = dialog.findViewById<RadioButton>(sortBy.checkedRadioButtonId)
-        val orderByRes = dialog.findViewById<RadioButton>(orderBy.checkedRadioButtonId)
-        val statusRes = dialog.findViewById<RadioButton>(status.checkedRadioButtonId)
-
-        // Debug
-        Log.d("apply", "----------------")
-
-        Log.d("apply", orderText)
-
-        Log.d("apply",orderByRes.text.toString())
-        Log.d("apply",sortRes.text.toString())
-        Log.d("apply",statusRes.text.toString())
-
-        // If empty take min/max dates
-        Log.d("apply",yearStart.text.toString())
-        Log.d("apply",yearEnd.text.toString())
-
-        // If empty take all brands
-        var selectedBrands: ArrayList<String> = getAllTheSelectedBrands()
-        Log.d("apply", selectedBrands.toString())
-
-        // If empty take all categories
-        var selectedCategories: ArrayList<String> = getAllTheSelectedCategories()
-        Log.d("apply", selectedCategories.toString())
-
-        Log.d("apply", "----------------")
+        // Update the vue
+//        adapter?.notifyDataSetChanged()
+        adapter?.filter?.filter(searching.query)
 
         dialog.dismiss()
     }
 
-    /**
-     * Return all the selected brands in the filters modal
-     */
-    private fun getAllTheSelectedBrands(): ArrayList<String> {
-
-        var res: ArrayList<String> = ArrayList()
-
-        // Get all the selected brands
-        for (i in 0 until brands.childCount) {
-
-            // Get the current chi^p
-            var currentChip: Chip = brands.getChildAt(i) as Chip
-
-            // If is selected
-            if (currentChip.isChecked){
-
-                // Get it
-                res.add(currentChip.text.toString())
-            }
-        }
-
-        return res
-    }
-
-    /**
-     * Return all the selected categories in the filters modal
-     */
-    private fun getAllTheSelectedCategories(): ArrayList<String> {
-
-        var res: ArrayList<String> = ArrayList()
-
-        // Get all the selected brands
-        for (i in 0 until categories.childCount) {
-
-            // Get the current chi^p
-            var currentChip: Chip = categories.getChildAt(i) as Chip
-
-            // If is selected
-            if (currentChip.isChecked){
-
-                // Get it
-                res.add(currentChip.text.toString())
-            }
-        }
-
-        return res
-    }
-
     override fun onRefresh() {
         Toast.makeText(this,"HERE", Toast.LENGTH_LONG)
-    }
-
-    public class UsersAdapter(context: Context): BaseAdapter(), Filterable {
-
-        /**
-         * Context
-         */
-        private var context: Context = context
-
-        /**
-         * The original list
-         */
-        var originalList = collection.getItems()
-
-        /**
-         * The current list
-         */
-        var currentList = ArrayList(originalList)
-
-        override fun getView(position: Int, convertView: View?, viewGroup: ViewGroup?): View {
-
-            val inflater = LayoutInflater.from(this.context)
-
-            // Row
-            val row = inflater.inflate(R.layout.item_row, viewGroup, false)
-
-            val item: Item = currentList[position]
-
-            // Thumbnail
-            val thumb = row.findViewById<ImageView>(R.id.image)
-
-            /**
-             * Load the image, reduce the resolution and put it in the cache
-             */
-            Glide.with(this.context).load(item!!.getUrlThumbnail()).centerCrop().placeholder(R.drawable.no_image).into(thumb)
-
-            // Name
-            val nameText = row.findViewById<TextView>(R.id.name)
-            nameText.text = item.name
-
-            // Age
-            val brandText = row.findViewById<TextView>(R.id.brand)
-            brandText.text = item.brand
-
-            return row
-        }
-
-        override fun getItem(position: Int): Item {
-            return currentList[position]
-        }
-
-        override fun getItemId(position: Int): Long {
-            return position.toLong()
-        }
-
-        override fun getCount(): Int {
-            return currentList.size
-        }
-
-        override fun getFilter(): Filter {
-
-            return object : Filter() {
-
-                override fun performFiltering(constraint: CharSequence?): FilterResults {
-
-                    // Filtered list
-                    var filteredList : List<Item> = ArrayList()
-
-                    // If not empty
-                    if (constraint != null) {
-
-                        // The typed text
-                        var currentText = constraint.toString().toLowerCase()
-
-                        // For each stored elements
-                        for (item in originalList) {
-
-                            // If the item name or brand contains the sequence then keep it
-                            if (item.name.toLowerCase().contains(currentText) || (item.brand.toLowerCase().contains(currentText))) {
-                                filteredList += item
-                            }
-                        }
-                    } else {
-                        filteredList += originalList
-                    }
-
-                    // Convert to filterResults
-                    var res: FilterResults = FilterResults()
-                    res.values = filteredList
-
-                    // Return it
-                    return res
-                }
-
-                override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-
-                    if (results != null) {
-
-                        currentList.clear()
-                        currentList.addAll(results.values as kotlin.collections.Collection<Item>)
-                        notifyDataSetChanged()
-                    }
-                }
-
-            }
-        }
-
     }
 }

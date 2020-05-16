@@ -24,7 +24,7 @@ class Collection : SQLiteOpenHelper {
     /**
      * Array list of items
      */
-    private var items: ArrayList<Item> = arrayListOf()
+    var items: ArrayList<Item> = arrayListOf()
 
     /**
      * Static methods

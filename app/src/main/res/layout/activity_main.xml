@@ -41,6 +41,7 @@
                     android:layout_weight="1"
                     android:animateLayoutChanges="true"
                     android:background="?attr/colorPrimary"
+                    android:onClick="expandSearchBar"
                     app:iconifiedByDefault="true"
                     app:queryBackground="@android:color/transparent"
                     app:queryHint="@string/search_hint"

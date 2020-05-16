@@ -208,6 +208,7 @@ class ItemActivity : AppCompatActivity() {
                 contentSpecs.text = contentSpecs.text.toString() + "• " + detail
                 i++
             }
+
         } else {
             contentSpecs.text = "No technical details available"
         }

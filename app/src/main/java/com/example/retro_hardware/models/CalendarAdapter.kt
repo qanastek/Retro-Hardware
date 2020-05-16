@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.retro_hardware.R
 import java.util.*
 
-/**
+    /**
      * The adapter for the horizontal recyclerView of images
      */
     public class CalendarAdapter(private val context: Context, private val item: Item): RecyclerView.Adapter<CalendarAdapter.ViewHolder>() {
@@ -36,7 +36,7 @@ import java.util.*
             holder.dayDate.text = DateFormat.format("MMM", dateCalendarItem)
 
             // Get the product name
-            holder.labelPresentation.text = "Presentation of the $item.name"
+            holder.labelPresentation.text = "Presentation of the ${item.name}"
         }
 
         override fun getItemId(position: Int): Long {
