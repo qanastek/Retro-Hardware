@@ -1,6 +1,7 @@
 package com.example.retro_hardware.models
 
 import android.content.Context
+import android.opengl.Visibility
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -232,6 +233,7 @@ public class UsersAdapter(context: Context): BaseAdapter(), Filterable {
                      */
                     var orderText: String =  if(MainActivity.order.isChecked) MainActivity.order.textOn.toString() else MainActivity.order.textOff.toString()
 
+                    // Get radio buttons results
                     val sortRes = MainActivity.dialog.findViewById<RadioButton>(MainActivity.sortBy.checkedRadioButtonId)
                     val statusRes = MainActivity.dialog.findViewById<RadioButton>(MainActivity.status.checkedRadioButtonId)
 
@@ -283,7 +285,6 @@ public class UsersAdapter(context: Context): BaseAdapter(), Filterable {
 
                     // If empty take min/max dates
                     // Starting year
-                    Log.d("apply",MainActivity.yearStart.text.toString())
                     if (MainActivity.yearStart.text.toString().isNotBlank()) {
 
                         var yearStartCompare: String = MainActivity.yearStart.text.toString()
@@ -293,7 +294,6 @@ public class UsersAdapter(context: Context): BaseAdapter(), Filterable {
                     /**
                      * Ending year
                      */
-                    Log.d("apply",MainActivity.yearEnd.text.toString())
                     if (MainActivity.yearEnd.text.toString().isNotBlank()) {
 
                         var yearEndCompare: String = MainActivity.yearEnd.text.toString()
@@ -371,7 +371,7 @@ public class UsersAdapter(context: Context): BaseAdapter(), Filterable {
 
                 override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
 
-                    if (results != null) {
+                    if (results?.values != null) {
 
                         // Order by value
                         var orderByResBtn = MainActivity.dialog.findViewById<RadioButton>(MainActivity.orderBy.checkedRadioButtonId)
@@ -385,6 +385,26 @@ public class UsersAdapter(context: Context): BaseAdapter(), Filterable {
                         }
 
                         notifyDataSetChanged()
+
+                    } else {
+                        currentList?.clear()
+                        notifyDataSetChanged()
+                    }
+
+                    // Check if empty
+                    if (currentList?.isEmpty()) {
+
+                        // Check not already displayed
+                        if (MainActivity.emptyList.visibility != View.VISIBLE) {
+
+                            // Show the empty icon
+                            MainActivity.emptyList.visibility = View.VISIBLE
+                        }
+
+                    } else {
+
+                        // Hide the empty icon
+                        MainActivity.emptyList.visibility = View.GONE
                     }
                 }
             }

@@ -1,5 +1,6 @@
 package com.example.retro_hardware.controllers
 
+import android.app.ActivityOptions
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityOptionsCompat
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.retro_hardware.R
 import com.example.retro_hardware.models.Collection
@@ -16,6 +18,7 @@ import com.example.retro_hardware.models.Item
 import com.example.retro_hardware.models.UsersAdapter
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import kotlinx.android.synthetic.main.item_row.view.*
 
 
 class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
@@ -49,6 +52,11 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
          * Filters dialog
          */
         lateinit var dialog: Dialog
+
+        /**
+         * Empty list image
+         */
+        lateinit var emptyList: ImageView
 
         /**
          * Filtering window
@@ -151,8 +159,12 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
 
             val item: Item? = adapter?.getItem(position) // The item that was clicked
             var intent = Intent(this, ItemActivity::class.java)
+
+            val options = ActivityOptionsCompat
+            .makeSceneTransitionAnimation(this, view.cardRow, "robot")
+
             intent.putExtra("item", item)
-            startActivity(intent)
+            startActivity(intent, options.toBundle())
         }
     }
 
@@ -192,6 +204,9 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
 
         rootLayout = viewFilter.findViewById(R.id.root)
         scrollFilter = viewFilter.findViewById(R.id.scrollFilter)
+
+        // Image empty list
+        emptyList = findViewById(R.id.emptyList)
 
         /**
          * Fields
