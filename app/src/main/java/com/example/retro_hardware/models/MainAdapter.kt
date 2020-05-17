@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.example.retro_hardware.R
 import com.example.retro_hardware.controllers.MainActivity
 
-public class UsersAdapter(context: Context): BaseAdapter(), Filterable {
+public class MainAdapter(context: Context): BaseAdapter(), Filterable {
 
         /**
          * Context

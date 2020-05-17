@@ -1,6 +1,5 @@
 package com.example.retro_hardware.controllers
 
-import android.app.ActivityOptions
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
@@ -15,7 +14,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.retro_hardware.R
 import com.example.retro_hardware.models.Collection
 import com.example.retro_hardware.models.Item
-import com.example.retro_hardware.models.UsersAdapter
+import com.example.retro_hardware.models.MainAdapter
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import kotlinx.android.synthetic.main.item_row.view.*
@@ -46,7 +45,7 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
         /**
          * Adapter
          */
-        var adapter: UsersAdapter? = null
+        var adapter: MainAdapter? = null
 
         /**
          * Filters dialog
@@ -148,7 +147,7 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
         initializeFilters()
 
         // Create and set the adapter
-        adapter = UsersAdapter(this)
+        adapter = MainAdapter(this)
         listView.adapter = adapter
 
         // Update the adapter
