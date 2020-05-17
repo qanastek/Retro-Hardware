@@ -56,6 +56,9 @@ class ItemActivity : AppCompatActivity() {
 
     companion object {
 
+        // Context
+        lateinit var context: Context
+
         // Adapters
         lateinit var adapterImage: ImageAdapter
         lateinit var adapterCalendar: CalendarAdapter
@@ -79,8 +82,13 @@ class ItemActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_item)
 
+        // Get context
+        context = this
+
+        // Get item
         this.item = intent.getParcelableExtra("item")
 
+        // Initialize
         initFields()
         fillUpFields()
         initZoom()

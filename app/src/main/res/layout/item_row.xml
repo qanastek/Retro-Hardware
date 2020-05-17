@@ -29,6 +29,7 @@
             android:layout_marginBottom="10dp"
             android:layout_weight="1"
             android:background="@color/colorPrimary"
+            android:transitionName="card"
             app:cardBackgroundColor="@color/colorPrimary"
             app:cardCornerRadius="15dp">
 
@@ -54,6 +55,7 @@
                         android:scaleType="centerCrop"
                         android:scaleX="1.1"
                         android:scaleY="1.1"
+                        android:transitionName="cardImage"
                         android:visibility="visible"
                         tools:srcCompat="@tools:sample/avatars" />
 
@@ -86,7 +88,8 @@
                         android:textColorHighlight="@color/colorAccent"
                         android:textColorLink="@color/colorAccent"
                         android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:transitionName="model" />
 
                     <TextView
                         android:id="@+id/brand"
@@ -102,7 +105,8 @@
                         android:textAlignment="textStart"
                         android:textAllCaps="true"
                         android:textColor="@android:color/white"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        android:transitionName="brand" />
                 </LinearLayout>
             </LinearLayout>
 

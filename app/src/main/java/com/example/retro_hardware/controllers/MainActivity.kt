@@ -1,6 +1,8 @@
 package com.example.retro_hardware.controllers
 
+import android.app.ActivityOptions
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -18,6 +20,7 @@ import com.example.retro_hardware.models.MainAdapter
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import kotlinx.android.synthetic.main.item_row.view.*
+import android.util.Pair as UtilPair
 
 
 class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
@@ -72,6 +75,9 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
         lateinit var alphabetical: RadioButton
         lateinit var both: RadioButton
 
+        // Context
+        lateinit var context: Context
+
         /**
          * Return all the selected categories in the filters modal
          */
@@ -122,7 +128,7 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
     }
 
     constructor() {
-//        MainActivity.context = context
+        context = this
         Log.d("MainActivity", "constructor")
     }
 
@@ -159,11 +165,8 @@ class MainActivity : AppCompatActivity, SwipeRefreshLayout.OnRefreshListener {
             val item: Item? = adapter?.getItem(position) // The item that was clicked
             var intent = Intent(this, ItemActivity::class.java)
 
-            val options = ActivityOptionsCompat
-            .makeSceneTransitionAnimation(this, view.cardRow, "robot")
-
             intent.putExtra("item", item)
-            startActivity(intent, options.toBundle())
+            startActivity(intent)
         }
     }
 

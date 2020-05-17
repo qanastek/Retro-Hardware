@@ -4,13 +4,14 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.retro_hardware.R
 import com.example.retro_hardware.controllers.ItemActivity
 
-    /**
+/**
      * The adapter for the horizontal recyclerView of images
      */
     public class ImageAdapter(private val context: Context, private val images: ArrayList<Pair<String,String>>): RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
@@ -46,6 +47,14 @@ import com.example.retro_hardware.controllers.ItemActivity
 
                 // Set description
                 ItemActivity.descriptionZoom.text = imageDesc
+
+                // Set animation
+                (ItemActivity.dialog.window?.decorView as ViewGroup)
+                .getChildAt(0).startAnimation(
+                    AnimationUtils.loadAnimation(
+                        context, android.R.anim.fade_in
+                    )
+                )
 
                 // Display the modal
                 ItemActivity.dialog.show()

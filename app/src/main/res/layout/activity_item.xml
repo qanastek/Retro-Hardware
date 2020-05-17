@@ -34,6 +34,7 @@
                     android:scaleType="centerCrop"
                     android:scaleX="1.2"
                     android:scaleY="1.2"
+                    android:transitionName="cardImage"
                     tools:srcCompat="@tools:sample/avatars" />
 
             </LinearLayout>
@@ -41,13 +42,15 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingLeft="10dp"
                 android:layout_marginTop="-35dp"
                 android:background="@drawable/item_background_rounded"
-                android:paddingRight="10dp">
+                android:orientation="vertical"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:transitionName="card">
 
                 // Title
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -64,15 +67,17 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center_horizontal"
+                        android:onClick="copy"
                         android:text="MACHINTOCH PLUS"
                         android:textColor="@color/textColorPrimary"
                         android:textSize="30sp"
-                        android:onClick="copy"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:transitionName="model" />
 
                 </LinearLayout>
 
                 // Status
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -136,12 +141,14 @@
                             android:textAllCaps="true"
                             android:textColor="@color/brand"
                             android:textSize="15dp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:transitionName="brand" />
                     </LinearLayout>
 
                 </LinearLayout>
 
                 // Cats label
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -163,6 +170,7 @@
                 </LinearLayout>
 
                 // Chip group
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -178,6 +186,7 @@
                 </LinearLayout>
 
                 // Label desc
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -199,6 +208,7 @@
                 </LinearLayout>
 
                 // Desc
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -257,6 +267,7 @@
                 </LinearLayout>
 
                 // TIME FRAMES
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -279,11 +290,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:padding="10dp"/>
+                        android:padding="10dp" />
 
                 </LinearLayout>
 
                 // Content specs
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -318,6 +330,7 @@
                 </LinearLayout>
 
                 // Images
+
                 <LinearLayout
                     android:id="@+id/imagesLinearLayout"
                     android:layout_width="match_parent"
@@ -349,6 +362,7 @@
                 </LinearLayout>
 
                 // Calendar
+
                 <LinearLayout
                     android:id="@+id/calendarLayout"
                     android:layout_width="match_parent"
