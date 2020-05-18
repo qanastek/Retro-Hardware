@@ -48,7 +48,7 @@ class Item(
 
         // Return the object URL
         fun fetchItemUrl(itemId: String): String {
-            return "${Api.BASE_URL}/items/$itemId"
+            return "${Collection.BASE_URL}/items/$itemId"
         }
 
         // Return the object
@@ -82,7 +82,7 @@ class Item(
      * Get the thumbnail url
      */
     fun getUrlThumbnail(): String {
-        return "${Api.BASE_URL}/items/${this.id}/thumbnail"
+        return "${Collection.BASE_URL}/items/${this.id}/thumbnail"
     }
 
     /**
@@ -103,7 +103,7 @@ class Item(
      * Get a image url
      */
     fun getUrlImage(imageId: String): String {
-        return "${Api.BASE_URL}/items/${this.id}/images/$imageId"
+        return "${Collection.BASE_URL}/items/${this.id}/images/$imageId"
     }
 
     override fun toString(): String {

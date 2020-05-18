@@ -24,6 +24,7 @@ class SplashScreen : AppCompatActivity() {
         setContentView(R.layout.activity_splash_screen)
         setTheme(R.style.SplashScreen)
 
+        // Run the splash screen
         Handler().postDelayed(Runnable{
             val mainIntent = Intent(this@SplashScreen, MainActivity::class.java)
             startActivity(mainIntent)

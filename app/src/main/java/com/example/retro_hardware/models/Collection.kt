@@ -72,18 +72,21 @@ class Collection : SQLiteOpenHelper {
         const val DEMOS_ITEM_ID  = "item_id" // Item id
         const val DEMOS_DATE  = "date" // Date of the next demo
 
+        // API root URL
+        const val BASE_URL = "https://demo-lia.univ-avignon.fr/cerimuseum"
+
         /**
          * Get the collection url
          */
         fun getUrlCollection(): String {
-            return "${Api.BASE_URL}/catalog"
+            return "${BASE_URL}/catalog"
         }
 
         /**
          * Get a collection url
          */
         fun getUrlDemos(): String {
-            return "${Api.BASE_URL}/demos"
+            return "${BASE_URL}/demos"
         }
 
         /**
